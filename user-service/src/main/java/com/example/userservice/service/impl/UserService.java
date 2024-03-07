@@ -1,7 +1,12 @@
 package com.example.userservice.service.impl;
 
+import com.example.userservice.client.MediaClient;
+import com.example.userservice.dto.MediaDto;
 import com.example.userservice.dto.UserDto;
+import com.example.userservice.dto.UserRequest;
+import com.example.userservice.dto.UserResponse;
 import com.example.userservice.entity.User;
+import com.example.userservice.entity.enums.MediaStatus;
 import com.example.userservice.exception.NotFoundException;
 import com.example.userservice.repository.IUserRepository;
 import com.example.userservice.service.IUserService;
@@ -20,31 +25,40 @@ public class UserService implements IUserService {
 
     private final IUserRepository userRepository;
     private final ModelMapper modelMapper;
+    private final MediaClient mediaClient;
+    private final static String USER_OR_AGENCE_NOT_FOUND = "User or agence not found with this id's : ";
     private final static String USER_NOT_FOUND = "User not found with this id : ";
 
     @Override
-    public UserDto save(Long userCreatedBy, UserDto userDto)
+    public UserResponse save(/* Long agenceId , */Long agentCreatedBy, UserRequest userRequest)
     {
-        userDto.setAgentCreatedBy(userCreatedBy);
-        userDto.setCreatedAt(LocalDateTime.now());
-        User user = userRepository.save(modelMapper.map(userDto, User.class));
-        return modelMapper.map(user, UserDto.class);
+        userRequest.setAgentCreatedBy(agentCreatedBy);
+        userRequest.setCreatedAt(LocalDateTime.now());
+        userRequest.setAgenceId(1L);
+        return saveUserAndMedia(agentCreatedBy, userRequest);
     }
 
     @Override
-    public UserDto getById(Long id)
+    public UserResponse getById(Long id)
     {
         User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException(USER_NOT_FOUND + id));
-        return modelMapper.map(user, UserDto.class);
+        List<MediaDto> medias = mediaClient.getMediaByRelatedId(id).getBody();
+
+        return new UserResponse(modelMapper.map(user, UserDto.class), medias);
     }
 
     @Override
-    public List<UserDto> all()
+    public List<UserResponse> all()
     {
         List<User> users = userRepository.findAll();
+
         return users
                 .stream()
-                .map((user) -> modelMapper.map(user, UserDto.class))
+                .map((user) -> {
+                    UserDto userDto = modelMapper.map(user, UserDto.class);
+                    List<MediaDto> medias = mediaClient.getMediaByRelatedId(userDto.getId()).getBody();
+                    return new UserResponse(userDto, medias);
+                })
                 .toList();
     }
 
@@ -61,6 +75,7 @@ public class UserService implements IUserService {
         user.setTelephone(userDTO.getTelephone());
         user.setUsername(user.getUsername());
         user.setVille(userDTO.getVille());
+        user.setUpdatedAt(LocalDateTime.now());
 
         User userUpdated = userRepository.save(user);
         return modelMapper.map(userUpdated, UserDto.class);
@@ -70,5 +85,49 @@ public class UserService implements IUserService {
     public void delete(Long id)
     {
         userRepository.deleteById(id);
+    }
+
+    @Override
+    public List<UserResponse> allByAgence(Long agenceId)
+    {
+        List<User> users = userRepository.findByAgenceId(agenceId);
+        return users
+                .stream()
+                .map((user) -> {
+                    UserDto userDto = modelMapper.map(user, UserDto.class);
+                    List<MediaDto> medias = mediaClient.getMediaByRelatedId(userDto.getId()).getBody();
+                    return new UserResponse(userDto, medias);
+                })
+                .toList();
+    }
+
+    @Override
+    public UserResponse byIdAndAgence(Long userId, Long agenceId)
+    {
+        User user = userRepository.findByIdAndAgenceId(userId, agenceId).orElseThrow(() -> new NotFoundException(USER_OR_AGENCE_NOT_FOUND + userId + "agence : " + agenceId));
+        List<MediaDto> medias = mediaClient.getMediaByRelatedId(user.getId()).getBody();
+        return new UserResponse(modelMapper.map(user, UserDto.class), medias);
+    }
+
+    @Override
+    public UserResponse saveByAdmin(Long agentCreatedBy, UserRequest userRequest)
+    {
+        userRequest.setAgentCreatedBy(agentCreatedBy);
+        userRequest.setCreatedAt(LocalDateTime.now());
+        userRequest.setAgenceId(1L);
+        return saveUserAndMedia(agentCreatedBy, userRequest);
+    }
+
+    public UserResponse saveUserAndMedia(Long agentCreatedBy, UserRequest userRequest)
+    {
+        User user = userRepository.save(modelMapper.map(userRequest, User.class));
+        UserResponse userResponse = new UserResponse();
+        userResponse.setUserDto(modelMapper.map(userRequest, UserDto.class));
+        if(userRequest.getMultipartFiles() != null && !userRequest.getMultipartFiles().isEmpty())
+        {
+            userResponse.setMedias(mediaClient.save(userRequest.getMultipartFiles(),
+                    agentCreatedBy, user.getId(), MediaStatus.PHOTO_PROFIL).getBody());
+        }
+        return userResponse;
     }
 }

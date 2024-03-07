@@ -6,6 +6,7 @@ import lombok.*;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -33,8 +34,9 @@ public class User {
     private Long agentCreatedBy;
     private String telephone;
     private Role role;
-    private LocalDateTime dateNaissance;
+    private LocalDate dateNaissance;
     private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+    private Long agenceId;
     private boolean isDelete = Boolean.FALSE;
-
 }

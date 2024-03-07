@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -15,24 +16,17 @@ import java.time.LocalDateTime;
 public class UserDto {
 
     private Long id;
-    @NotBlank
     private String username;
-    @NotBlank
     private String email;
-    @NotBlank
     private String firstname;
-    @NotBlank
     private String lastname;
-    @NotBlank
     private String address;
-    @NotBlank
     private String ville;
-    @NotBlank
     private String telephone;
-    @NotNull
     private Role role;
     private Long agentCreatedBy;
+    private Long agenceId;
     private LocalDateTime createdAt;
-    @NotNull
-    private LocalDateTime dateNaissance;
+    private LocalDateTime updatedAt;
+    private LocalDate dateNaissance;
 }
