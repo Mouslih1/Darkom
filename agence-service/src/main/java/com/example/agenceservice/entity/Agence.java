@@ -4,6 +4,11 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
@@ -16,6 +21,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @SQLDelete(sql = "UPDATE agences SET is_delete = true WHERE id=?")
 @Where(clause = "is_delete = false")
+@EntityListeners(AuditingEntityListener.class)
 public class Agence {
 
     @Id
@@ -28,8 +34,15 @@ public class Agence {
     private String telephone;
     @Column(unique = true)
     private String email;
-    private Long agentCreatedBy;
+
+    @CreatedBy
+    private String agentCreatedBy;
+    @LastModifiedBy
+    private String agentUpdatedBy;
+    @CreatedDate
     private LocalDateTime createdAt;
+    @LastModifiedDate
     private LocalDateTime updatedAt;
+
     private boolean isDelete = Boolean.FALSE;
 }

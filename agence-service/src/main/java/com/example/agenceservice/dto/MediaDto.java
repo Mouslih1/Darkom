@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
 
@@ -18,11 +19,13 @@ public class MediaDto {
     private Long id;
     private String mediaUuid;
     private String filename;
-    private Long agentCreatedBy;
+    private String agentCreatedBy;
+    private String agentUpdatedBy;
     private String uri;
     private Long relatedId;
     private MediaStatus mediaStatus;
     private String fileType;
     private Long size;
-    private LocalDateTime createdDate;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }

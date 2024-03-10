@@ -17,6 +17,7 @@ import java.util.List;
 @NoArgsConstructor
 public class UserRequest {
 
+    private Long id;
     @NotBlank
     private String username;
     @NotBlank
@@ -33,7 +34,8 @@ public class UserRequest {
     private String telephone;
     @NotNull
     private Role role;
-    private Long agentCreatedBy;
+    private String agentCreatedBy;
+    private String agentUpdatedBy;
     private Long agenceId;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

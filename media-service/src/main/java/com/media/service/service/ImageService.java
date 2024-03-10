@@ -20,14 +20,33 @@ import java.util.List;
 public class ImageService {
 
     private final FileStorageService fileStorageService;
-
     private final MediaRepository mediaRepository;
     private final ModelMapper modelMapper;
 
 
-    public MediaDto upload(MultipartFile file, Long agentCreatedBy, Long relatedId, MediaStatus mediaStatus) throws IOException
+    public MediaDto upload(MultipartFile file, String agentCreatedBy, Long relatedId, MediaStatus mediaStatus) throws IOException
     {
         MediaDto metadata = fileStorageService.store(file, agentCreatedBy, relatedId, mediaStatus);
+        Media media = mediaRepository.save(modelMapper.map(metadata, Media.class));
+        return modelMapper.map(media, MediaDto.class);
+    }
+
+    public MediaDto update(MultipartFile file, String agentUpdatedBy, Long relatedId, MediaStatus mediaStatus) throws IOException
+    {
+        System.out.println(file);
+        System.out.println(agentUpdatedBy);
+
+        List<Media> medias = mediaRepository.findByRelatedIdAndMediaStatus(relatedId, mediaStatus);
+        if(!medias.isEmpty())
+        {
+            medias.forEach(media -> {
+                fileStorageService.delete(media.getFilename());
+                 mediaRepository.delete(media);
+            });
+        }
+
+
+        MediaDto metadata = fileStorageService.store(file, agentUpdatedBy, relatedId, mediaStatus);
         Media media = mediaRepository.save(modelMapper.map(metadata, Media.class));
         return modelMapper.map(media, MediaDto.class);
     }
@@ -40,18 +59,18 @@ public class ImageService {
         mediaRepository.delete(media);
     }
 
-    public List<MediaDto> getMediaByRelatedId(Long relatedId)
+    public List<MediaDto> getMediaByRelatedId(Long relatedId, MediaStatus mediaStatus)
     {
-        List<Media> medias = mediaRepository.findByRelatedId(relatedId);
+        List<Media> medias = mediaRepository.findByRelatedIdAndMediaStatus(relatedId, mediaStatus);
         return medias
                 .stream()
                 .map((media) -> modelMapper.map(media, MediaDto.class))
                 .toList();
     }
 
-    public void deleteMediaByRelatedId(Long relatedId)
+    public void deleteMediaByRelatedId(Long relatedId, MediaStatus mediaStatus)
     {
-        mediaRepository.findByRelatedId(relatedId).forEach(media -> {
+        mediaRepository.findByRelatedIdAndMediaStatus(relatedId, mediaStatus).forEach(media -> {
             fileStorageService.delete(media.getFilename());
             mediaRepository.delete(media);
         });

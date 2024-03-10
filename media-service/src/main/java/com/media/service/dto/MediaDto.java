@@ -18,11 +18,13 @@ public class MediaDto {
     private Long id;
     private String mediaUuid;
     private String filename;
-    private Long agentCreatedBy;
+    private String agentCreatedBy;
+    private String agentUpdatedBy;
     private String uri;
     private Long relatedId;
     private MediaStatus mediaStatus;
     private String fileType;
     private Long size;
-    private LocalDateTime createdDate;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }

@@ -21,7 +21,8 @@ public class AgenceDto {
     private String ville;
     private String telephone;
     private String email;
-    private Long agentCreatedBy;
+    private String agentCreatedBy;
+    private String agentUpdatedBy;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

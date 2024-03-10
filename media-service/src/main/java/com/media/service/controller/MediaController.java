@@ -25,7 +25,7 @@ public class MediaController {
 
     @PostMapping
     public ResponseEntity<List<MediaDto>> save(@RequestParam("files") List<MultipartFile> files,
-                                              @RequestParam("agentCreatedBy") Long agentCreatedBy,
+                                              @RequestParam("agentCreatedBy") String agentCreatedBy,
                                               @RequestParam("relatedId") Long relatedId,
                                               @RequestParam("mediaStatus") MediaStatus mediaStatus
     ) throws IOException
@@ -34,6 +34,22 @@ public class MediaController {
         for (MultipartFile file : files)
         {
             MediaDto media = mediaService.upload(file, agentCreatedBy,relatedId, mediaStatus);
+            medias.add(media);
+        }
+        return new ResponseEntity<>(medias, HttpStatus.CREATED);
+    }
+
+    @PutMapping("relatedId/{relatedId}")
+    public ResponseEntity<List<MediaDto>> update(@RequestPart("files") List<MultipartFile> files,
+                                               @RequestParam("agentUpdatedBy") String agentUpdatedBy,
+                                               @PathVariable Long relatedId,
+                                               @RequestParam("mediaStatus") MediaStatus mediaStatus
+    ) throws IOException
+    {
+        List<MediaDto> medias = new ArrayList<>();
+        for (MultipartFile file : files)
+        {
+            MediaDto media = mediaService.update(file, agentUpdatedBy,relatedId, mediaStatus);
             medias.add(media);
         }
         return new ResponseEntity<>(medias, HttpStatus.CREATED);
@@ -48,14 +64,14 @@ public class MediaController {
     }
 
     @GetMapping("/related/{relatedId}")
-    public ResponseEntity<List<MediaDto>> getMediaByRelatedId(@PathVariable("relatedId") Long relatedId)
+    public ResponseEntity<List<MediaDto>> getMediaByRelatedId(@PathVariable("relatedId") Long relatedId, MediaStatus mediaStatus)
     {
-        return new ResponseEntity<>(mediaService.getMediaByRelatedId(relatedId), HttpStatus.OK);
+        return new ResponseEntity<>(mediaService.getMediaByRelatedId(relatedId, mediaStatus), HttpStatus.OK);
     }
 
     @DeleteMapping("/related/{relatedId}")
-    public void deleteMediaByRelatedId(@PathVariable("relatedId") Long relatedId)
+    public void deleteMediaByRelatedId(@PathVariable("relatedId") Long relatedId, MediaStatus mediaStatus)
     {
-        mediaService.deleteMediaByRelatedId(relatedId);
+        mediaService.deleteMediaByRelatedId(relatedId, mediaStatus);
     }
 }

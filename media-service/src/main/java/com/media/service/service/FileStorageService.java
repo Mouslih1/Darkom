@@ -20,7 +20,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -32,7 +31,7 @@ public class FileStorageService {
     @Value("/home/maro/IdeaProjects/Darkom/images/")
     private String uploadDirectory;
 
-    public MediaDto store(MultipartFile file, Long agencyCreatedBy, Long relatedId, MediaStatus mediaType) throws IOException
+    public MediaDto store(MultipartFile file, String agenceCreatedBy ,Long relatedId, MediaStatus mediaType) throws IOException
     {
         String filename = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
 
@@ -66,14 +65,13 @@ public class FileStorageService {
 
         return MediaDto.builder()
                 .filename(newFilename)
-                .agentCreatedBy(agencyCreatedBy)
-                .mediaUuid(relatedId + "-" + agencyCreatedBy + "-" + UUID.randomUUID().toString().substring(0,4))
+                .agentCreatedBy(agenceCreatedBy)
+                .mediaUuid(relatedId + "-" + UUID.randomUUID().toString().substring(0,4))
                 .relatedId(relatedId)
                 .mediaStatus(MediaStatus.valueOf(mediaType.toString()))
                 .fileType(file.getContentType())
                 .size(file.getSize())
                 .uri(fileUrl)
-                .createdDate(LocalDateTime.now())
                 .build();
     }
 

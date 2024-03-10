@@ -24,7 +24,8 @@ public class UserDto {
     private String ville;
     private String telephone;
     private Role role;
-    private Long agentCreatedBy;
+    private String agentCreatedBy;
+    private String agentUpdatedBy;
     private Long agenceId;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

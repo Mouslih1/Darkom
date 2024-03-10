@@ -1,7 +1,7 @@
 package com.example.userservice.controller;
 
-import com.example.userservice.dto.UserDto;
 import com.example.userservice.dto.UserRequest;
+import com.example.userservice.dto.UserRequestLogo;
 import com.example.userservice.dto.UserResponse;
 import com.example.userservice.exception.Error;
 import com.example.userservice.service.IUserService;
@@ -21,24 +21,22 @@ public class UserController {
     private final IUserService userService;
 
     //TODO: INCLUDE THE ID OF AGENCE
-    @PostMapping("/{id}")
+    @PostMapping
     public ResponseEntity<UserResponse> register(
             /*@RequestHeader("agenceId") Long agenceId ,*/
-            @PathVariable("id") Long agentCreatedBy,
-            @RequestBody @Valid UserRequest userRequest
+            @ModelAttribute @Valid UserRequest userRequest
     )
     {
-        return new ResponseEntity<>(userService.save(agentCreatedBy,userRequest), HttpStatus.CREATED);
+        return new ResponseEntity<>(userService.save(userRequest), HttpStatus.CREATED);
     }
 
-    @PostMapping("/admin/{id}")
+    @PostMapping("/admin")
     public ResponseEntity<UserResponse> registerByAdmin(
             /*@RequestHeader("agenceId") Long agenceId ,*/
-            @PathVariable("id") Long agentCreatedBy,
             @RequestBody @Valid UserRequest userRequest
     )
     {
-        return new ResponseEntity<>(userService.saveByAdmin(agentCreatedBy,userRequest), HttpStatus.CREATED);
+        return new ResponseEntity<>(userService.saveByAdmin(userRequest), HttpStatus.CREATED);
     }
 
     @GetMapping
@@ -55,9 +53,15 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserDto> update(@PathVariable Long id, @RequestBody @Valid UserDto userDto)
+    public ResponseEntity<UserResponse> update(@PathVariable Long id, @RequestBody @Valid UserRequest userRequest)
     {
-        return new ResponseEntity<>(userService.update(id, userDto), HttpStatus.OK);
+        return new ResponseEntity<>(userService.update(id, userRequest), HttpStatus.OK);
+    }
+
+    @PutMapping("/logo/{id}")
+    public ResponseEntity<UserResponse> updateLogo(@PathVariable Long id, @ModelAttribute UserRequestLogo userRequestLogo)
+    {
+        return new ResponseEntity<>(userService.updateLogo(id, userRequestLogo), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")

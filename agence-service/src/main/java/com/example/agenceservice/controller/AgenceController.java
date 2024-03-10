@@ -1,13 +1,13 @@
 package com.example.agenceservice.controller;
 
-import com.example.agenceservice.dto.AgenceDto;
+import com.example.agenceservice.dto.AgenceLogoRequest;
 import com.example.agenceservice.dto.AgenceRequest;
 import com.example.agenceservice.dto.AgenceResponse;
 import com.example.agenceservice.exception.Error;
 import com.example.agenceservice.service.impl.AgenceService;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -24,20 +24,27 @@ public class AgenceController {
 
     private final AgenceService agenceService;
 
-    @PostMapping( value = "/{agentCreatedBy}")
+    @PostMapping
     public ResponseEntity<AgenceResponse> save(
-            @PathVariable Long agentCreatedBy,
             @ModelAttribute @Valid AgenceRequest agenceRequest
     ) {
-        return new ResponseEntity<>(agenceService.save(agentCreatedBy, agenceRequest), HttpStatus.CREATED);
+        return new ResponseEntity<>(agenceService.save(agenceRequest), HttpStatus.CREATED);
     }
 
     @PutMapping( "/{agenceId}")
-    public ResponseEntity<AgenceDto> update(
+    public ResponseEntity<AgenceResponse> update(
             @PathVariable Long agenceId,
-            @RequestBody @Valid AgenceDto agenceDto
+            @ModelAttribute @Valid AgenceRequest agenceRequest
     ){
-        return new ResponseEntity<>(agenceService.update(agenceId, agenceDto), HttpStatus.OK);
+        return new ResponseEntity<>(agenceService.update(agenceId, agenceRequest), HttpStatus.OK);
+    }
+
+    @PutMapping( "/logo/{agenceId}")
+    public ResponseEntity<AgenceResponse> updateLogo(
+            @PathVariable Long agenceId,
+            @ModelAttribute AgenceLogoRequest agenceLogoRequest
+    ){
+        return new ResponseEntity<>(agenceService.updateLogo(agenceId, agenceLogoRequest), HttpStatus.OK);
     }
 
     @GetMapping
