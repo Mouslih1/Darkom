@@ -34,8 +34,11 @@ public class Appartement {
     private float surface;
     private float prixLocation;
     private float prixVente;
+    @Enumerated(value = EnumType.STRING)
     private StatusAppartement statusAppartement;
+    @Enumerated(value = EnumType.STRING)
     private EtatAppartement etatAppartement;
+    private Long immeubleId;
     @CreatedBy
     private String agentCreatedBy;
     @LastModifiedBy
@@ -44,4 +47,5 @@ public class Appartement {
     private LocalDateTime createdAt;
     @LastModifiedDate
     private LocalDateTime updatedAt;
+    private boolean isDelete = Boolean.FALSE;
 }

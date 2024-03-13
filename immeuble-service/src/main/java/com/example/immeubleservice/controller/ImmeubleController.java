@@ -1,6 +1,7 @@
 package com.example.immeubleservice.controller;
 
 import com.example.immeubleservice.dto.ImmeubleDto;
+import com.example.immeubleservice.entity.enums.StatusImmeuble;
 import com.example.immeubleservice.exception.Error;
 import com.example.immeubleservice.service.IimmeubleService;
 import lombok.RequiredArgsConstructor;
@@ -51,5 +52,15 @@ public class ImmeubleController {
     public ResponseEntity<List<ImmeubleDto>> all()
     {
         return new ResponseEntity<>(iimmeubleService.all(), HttpStatus.OK);
+    }
+
+    @PutMapping("/status/{id}")
+    public ResponseEntity<Void> updateStatusImmeuble(
+            @PathVariable Long id,
+            @RequestParam StatusImmeuble statusImmeuble
+    )
+    {
+        iimmeubleService.updateEtatImmeuble(id, statusImmeuble);
+        return ResponseEntity.ok().build();
     }
 }

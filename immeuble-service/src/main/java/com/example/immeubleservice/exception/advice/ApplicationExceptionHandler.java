@@ -1,5 +1,6 @@
 package com.example.immeubleservice.exception.advice;
 
+import com.example.immeubleservice.exception.Error;
 import com.example.immeubleservice.exception.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

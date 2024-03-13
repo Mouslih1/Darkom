@@ -1,6 +1,7 @@
 package com.example.immeubleservice.service;
 
 import com.example.immeubleservice.dto.ImmeubleDto;
+import com.example.immeubleservice.entity.enums.StatusImmeuble;
 
 import java.util.List;
 
@@ -11,4 +12,5 @@ public interface IimmeubleService {
     List<ImmeubleDto> all();
     ImmeubleDto byId(Long id);
     void delete(Long id);
+    void updateEtatImmeuble(Long id, StatusImmeuble statusImmeuble);
 }

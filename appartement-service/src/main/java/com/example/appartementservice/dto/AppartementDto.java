@@ -25,6 +25,7 @@ public class AppartementDto {
     private float prixVente;
     private StatusAppartement statusAppartement;
     private EtatAppartement etatAppartement;
+    private Long immeubleId;
     private String agentCreatedBy;
     private String agentUpdatedBy;
     private LocalDateTime createdAt;

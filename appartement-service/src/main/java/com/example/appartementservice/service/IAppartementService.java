@@ -11,4 +11,5 @@ public interface IAppartementService {
     List<AppartementDto> all();
     AppartementDto byId(Long id);
     void delete(Long id);
+    List<AppartementDto> byIdAndImmeuble(Long immeubleId);
 }

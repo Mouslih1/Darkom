@@ -35,6 +35,7 @@ public class Immeuble {
     private int numberApparetement;
     private Date anneeConstruction;
     private Long agenceId;
+    @Enumerated(value = EnumType.STRING)
     private StatusImmeuble statusImmeuble;
     @CreatedBy
     private String agentCreatedBy;

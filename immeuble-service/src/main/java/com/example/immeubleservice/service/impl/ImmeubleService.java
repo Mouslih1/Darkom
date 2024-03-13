@@ -2,6 +2,7 @@ package com.example.immeubleservice.service.impl;
 
 import com.example.immeubleservice.dto.ImmeubleDto;
 import com.example.immeubleservice.entity.Immeuble;
+import com.example.immeubleservice.entity.enums.StatusImmeuble;
 import com.example.immeubleservice.exception.NotFoundException;
 import com.example.immeubleservice.repository.IimeubleRepository;
 import com.example.immeubleservice.service.IimmeubleService;
@@ -69,5 +70,13 @@ public class ImmeubleService implements IimmeubleService {
     public void delete(Long id)
     {
         iimeubleRepository.deleteById(id);
+    }
+
+    @Override
+    public void updateEtatImmeuble(Long id, StatusImmeuble statusImmeuble)
+    {
+        Immeuble immeuble = iimeubleRepository.findById(id).orElseThrow(() -> new NotFoundException(IMMEUBLE_NOT_FOUND + id));
+        immeuble.setStatusImmeuble(statusImmeuble);
+        iimeubleRepository.save(immeuble);
     }
 }

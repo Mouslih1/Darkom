@@ -11,7 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-@FeignClient(url = "http://localhost:8016/api/v1/medias",name = "MEDIA-SERVICE")
+@FeignClient(url = "http://localhost:8086/api/v1/medias",name = "MEDIA-SERVICE")
 public interface MediaClient {
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

@@ -1,5 +1,6 @@
 package com.example.immeubleservice.entity.enums;
 
+
 public enum StatusImmeuble
 {
     OCCUPER,
