@@ -31,6 +31,7 @@ public class Travaux {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String description;
+    @Enumerated(EnumType.STRING)
     private Etat etat;
     private Date dateDebut;
     private Date dateFin;
@@ -44,4 +45,5 @@ public class Travaux {
     private LocalDateTime createdAt;
     @LastModifiedDate
     private LocalDateTime updatedAt;
+    private boolean isDelete = Boolean.FALSE;
 }

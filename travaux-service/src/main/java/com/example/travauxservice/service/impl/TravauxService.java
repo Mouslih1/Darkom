@@ -1,6 +1,8 @@
 package com.example.travauxservice.service.impl;
 
 import com.example.travauxservice.dto.TravauxDto;
+import com.example.travauxservice.entity.Travaux;
+import com.example.travauxservice.exception.NotFoundException;
 import com.example.travauxservice.repository.ITravauxRepository;
 import com.example.travauxservice.service.ITravauxService;
 import lombok.RequiredArgsConstructor;
@@ -17,31 +19,50 @@ public class TravauxService implements ITravauxService {
 
     private final ModelMapper modelMapper;
     private final ITravauxRepository iTravauxRepository;
+    private static final String TRAVAUX_NOT_FOUND = "Travaux not found with this id : ";
 
     @Override
     public TravauxDto save(TravauxDto travauxDto)
     {
-
-        return null;
+        Travaux travaux = iTravauxRepository.save(modelMapper.map(travauxDto, Travaux.class));
+        return modelMapper.map(travaux, TravauxDto.class);
     }
 
     @Override
-    public TravauxDto update(Long id, TravauxDto travauxDto) {
-        return null;
+    public TravauxDto update(Long id, TravauxDto travauxDto)
+    {
+        Travaux travaux = iTravauxRepository.findById(id).orElseThrow(() -> new NotFoundException(TRAVAUX_NOT_FOUND + id));
+        travaux.setEtat(travauxDto.getEtat());
+        travaux.setDescription(travauxDto.getDescription());
+        travaux.setImmeubleId(travauxDto.getImmeubleId());
+        travaux.setDateDebut(travauxDto.getDateDebut());
+        travaux.setDateFin(travauxDto.getDateFin());
+        travaux.setMontant(travauxDto.getMontant());
+
+        Travaux travauxUpdated = iTravauxRepository.save(travaux);
+        return modelMapper.map(travauxUpdated, TravauxDto.class );
     }
 
     @Override
-    public void delete(Long id) {
-
+    public void delete(Long id)
+    {
+        iTravauxRepository.deleteById(id);
     }
 
     @Override
-    public List<TravauxDto> all() {
-        return null;
+    public List<TravauxDto> all()
+    {
+        List<Travaux> travauxes = iTravauxRepository.findAll();
+        return travauxes
+                .stream()
+                .map((travaux) -> modelMapper.map(travaux, TravauxDto.class))
+                .toList();
     }
 
     @Override
-    public TravauxDto byId(Long id) {
-        return null;
+    public TravauxDto byId(Long id)
+    {
+        Travaux travaux = iTravauxRepository.findById(id).orElseThrow(() -> new NotFoundException(TRAVAUX_NOT_FOUND + id));
+        return modelMapper.map(travaux, TravauxDto.class);
     }
 }

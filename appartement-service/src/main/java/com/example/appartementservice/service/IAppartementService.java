@@ -12,4 +12,9 @@ public interface IAppartementService {
     AppartementDto byId(Long id);
     void delete(Long id);
     List<AppartementDto> byIdAndImmeuble(Long immeubleId);
+    void updateStatusImmeuble(Long immeubleId);
+    boolean areAnyApartmentsFree(Long immeubleId);
+    void validation(Long immeubleId);
+    int countOfAppartementInImmeuble(Long immeubleId);
+    void updateEtatAppartementToOccuper(Long appartementId);
 }

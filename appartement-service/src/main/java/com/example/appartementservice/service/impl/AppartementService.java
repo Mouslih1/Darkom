@@ -2,12 +2,14 @@ package com.example.appartementservice.service.impl;
 
 import com.example.appartementservice.client.ImmeubleClient;
 import com.example.appartementservice.dto.AppartementDto;
+import com.example.appartementservice.dto.ImmeubleDto;
 import com.example.appartementservice.entity.Appartement;
 import com.example.appartementservice.entity.enums.EtatAppartement;
 import com.example.appartementservice.entity.enums.StatusImmeuble;
+import com.example.appartementservice.exception.NotFoundException;
+import com.example.appartementservice.exception.ValidationException;
 import com.example.appartementservice.repository.IAppartementRepository;
 import com.example.appartementservice.service.IAppartementService;
-import jakarta.ws.rs.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -30,13 +32,44 @@ public class AppartementService implements IAppartementService {
     @Override
     public AppartementDto save(AppartementDto appartementDto)
     {
+        validation(appartementDto.getImmeubleId());
+
         Appartement appartementSaved = iAppartementRepository.save(modelMapper.map(appartementDto, Appartement.class));
+
         updateStatusImmeuble(appartementSaved.getImmeubleId());
         
         return modelMapper.map(appartementSaved, AppartementDto.class);
     }
 
-    private void updateStatusImmeuble(Long immeubleId)
+    @Override
+    public void validation(Long immeubleId)
+    {
+        ImmeubleDto immeubleDto = immeubleClient.byId(immeubleId).getBody();
+
+        if(immeubleDto != null && immeubleDto.getNumberApparetement() <= countOfAppartementInImmeuble(immeubleId))
+        {
+            throw new ValidationException("This immeuble can get juste " + immeubleDto.getNumberApparetement() + " appartement");
+        }
+    }
+
+    @Override
+    public int countOfAppartementInImmeuble(Long immeubleId)
+    {
+        List<Appartement> appartements = iAppartementRepository.findByImmeubleId(immeubleId);
+        return appartements.size();
+    }
+
+    @Override
+    public void updateEtatAppartementToOccuper(Long id)
+    {
+        Appartement appartement = iAppartementRepository.findById(id).orElseThrow(() -> new NotFoundException(APPARTEMENT_NOT_FOUND + id));
+
+        appartement.setEtatAppartement(EtatAppartement.OCCUPER);
+        iAppartementRepository.save(appartement);
+    }
+
+    @Override
+    public void updateStatusImmeuble(Long immeubleId)
     {
         boolean anyApartmentFree = areAnyApartmentsFree(immeubleId);
 
@@ -49,14 +82,20 @@ public class AppartementService implements IAppartementService {
         }
     }
 
+    @Override
     public boolean areAnyApartmentsFree(Long immeubleId)
     {
         List<Appartement> appartements = iAppartementRepository.findByImmeubleId(immeubleId);
-        for (Appartement appartement : appartements) {
-            if (appartement.getEtatAppartement().equals(EtatAppartement.LIBRE)) {
-                return true;
+        if (!appartements.isEmpty())
+        {
+            for (Appartement appartement : appartements)
+            {
+                if (appartement.getEtatAppartement() != null && appartement.getEtatAppartement().equals(EtatAppartement.LIBRE)) {
+                    return true;
+                }
             }
         }
+
         return false;
     }
 
@@ -64,16 +103,17 @@ public class AppartementService implements IAppartementService {
     public AppartementDto update(Long id, AppartementDto appartementDto)
     {
         Appartement appartement = iAppartementRepository.findById(id).orElseThrow(() -> new NotFoundException(APPARTEMENT_NOT_FOUND + id));
+
         appartement.setReferenceAppartement(appartementDto.getReferenceAppartement());
         appartement.setNumberChambre(appartementDto.getNumberChambre());
         appartement.setSurface(appartementDto.getSurface());
         appartement.setPrixLocation(appartementDto.getPrixLocation());
         appartement.setPrixVente(appartementDto.getPrixVente());
-        appartement.setEtatAppartement(appartementDto.getEtatAppartement());
         appartement.setStatusAppartement(appartementDto.getStatusAppartement());
         appartement.setImmeubleId(appartementDto.getImmeubleId());
-
+        appartement.setEtatAppartement(appartementDto.getEtatAppartement());
         Appartement appartementUpdated = iAppartementRepository.save(appartement);
+
         updateStatusImmeuble(appartementUpdated.getImmeubleId());
 
         return modelMapper.map(appartementUpdated, AppartementDto.class);

@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -18,7 +19,7 @@ public class AppartementController {
     private final IAppartementService iAppartementService;
 
     @PostMapping
-    public ResponseEntity<AppartementDto> save(@RequestBody AppartementDto appartementDto)
+    public ResponseEntity<AppartementDto> save(@RequestBody @Valid AppartementDto appartementDto)
     {
         return new ResponseEntity<>(iAppartementService.save(appartementDto), HttpStatus.CREATED);
     }
@@ -26,7 +27,7 @@ public class AppartementController {
     @PutMapping("/{id}")
     public ResponseEntity<AppartementDto> update(
             @PathVariable Long id,
-            @RequestBody AppartementDto appartementDto
+            @RequestBody @Valid AppartementDto appartementDto
     )
     {
         return new ResponseEntity<>(iAppartementService.update(id, appartementDto), HttpStatus.OK);
@@ -56,5 +57,12 @@ public class AppartementController {
     public ResponseEntity<List<AppartementDto>> byIdAndImmeuble(@PathVariable Long immeubleId)
     {
         return new ResponseEntity<>(iAppartementService.byIdAndImmeuble(immeubleId), HttpStatus.OK);
+    }
+
+    @PutMapping("/etat/{id}")
+    public ResponseEntity<Void> updateEtatAppartementToOccuper(@PathVariable Long id)
+    {
+        iAppartementService.updateEtatAppartementToOccuper(id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

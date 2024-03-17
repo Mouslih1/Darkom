@@ -59,7 +59,7 @@ public class UserController {
     }
 
     @PutMapping("/logo/{id}")
-    public ResponseEntity<UserResponse> updateLogo(@PathVariable Long id, @ModelAttribute UserRequestLogo userRequestLogo)
+    public ResponseEntity<UserResponse> updateLogo(@PathVariable Long id, @ModelAttribute @Valid UserRequestLogo userRequestLogo)
     {
         return new ResponseEntity<>(userService.updateLogo(id, userRequestLogo), HttpStatus.OK);
     }

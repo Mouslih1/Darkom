@@ -2,6 +2,8 @@ package com.example.appartementservice.dto;
 
 import com.example.appartementservice.entity.enums.EtatAppartement;
 import com.example.appartementservice.entity.enums.StatusAppartement;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,13 +20,20 @@ import java.time.LocalDateTime;
 public class AppartementDto {
 
     private Long id;
+    @NotBlank
     private String referenceAppartement;
+    @NotNull
     private int numberChambre;
+    @NotNull
     private float surface;
-    private float prixLocation;
-    private float prixVente;
+    @NotNull
+    private double prixLocation;
+    @NotNull
+    private double prixVente;
+    @NotNull
     private StatusAppartement statusAppartement;
-    private EtatAppartement etatAppartement;
+    private EtatAppartement etatAppartement = EtatAppartement.LIBRE;
+    @NotNull
     private Long immeubleId;
     private String agentCreatedBy;
     private String agentUpdatedBy;

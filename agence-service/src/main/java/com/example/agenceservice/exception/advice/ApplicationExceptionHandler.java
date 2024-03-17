@@ -42,4 +42,5 @@ public class ApplicationExceptionHandler {
         Error error = new Error(exception.getMessage());
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
+
 }

@@ -1,10 +1,10 @@
 package com.example.userservice.service;
 
+import com.example.userservice.dto.UserDto;
 import com.example.userservice.dto.UserRequest;
 import com.example.userservice.dto.UserRequestLogo;
 import com.example.userservice.dto.UserResponse;
 
-import javax.validation.Valid;
 import java.util.List;
 
 
@@ -19,4 +19,5 @@ public interface IUserService {
     List<UserResponse> allByAgence(Long agenceId);
     UserResponse byIdAndAgence(Long userId, Long agenceId);
     UserResponse saveByAdmin(UserRequest userDto);
+    void updatePassword(Long id, UserDto userDto);
 }

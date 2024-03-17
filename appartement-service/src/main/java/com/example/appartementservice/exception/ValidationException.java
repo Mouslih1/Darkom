@@ -1,0 +1,8 @@
+package com.example.appartementservice.exception;
+
+public class ValidationException extends RuntimeException{
+    public ValidationException(String message)
+    {
+        super(message);
+    }
+}

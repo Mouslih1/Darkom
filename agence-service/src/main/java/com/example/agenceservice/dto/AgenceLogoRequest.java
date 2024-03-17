@@ -24,5 +24,6 @@ public class AgenceLogoRequest {
     private String agentUpdatedBy;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    @NotNull
     private List<MultipartFile> multipartFiles;
 }

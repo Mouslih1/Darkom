@@ -42,7 +42,7 @@ public class AgenceController {
     @PutMapping( "/logo/{agenceId}")
     public ResponseEntity<AgenceResponse> updateLogo(
             @PathVariable Long agenceId,
-            @ModelAttribute AgenceLogoRequest agenceLogoRequest
+            @ModelAttribute @Valid AgenceLogoRequest agenceLogoRequest
     ){
         return new ResponseEntity<>(agenceService.updateLogo(agenceId, agenceLogoRequest), HttpStatus.OK);
     }

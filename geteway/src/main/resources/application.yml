@@ -34,6 +34,31 @@ spring:
           uri: http://localhost:8087
           predicates:
             - Path=/api/v1/appartements/**
+        - id: travaux
+          uri: http://localhost:8097
+          predicates:
+            - Path=/api/v1/travaux/**
+
+        - id: plaintes
+          uri: http://localhost:8098
+          predicates:
+            - Path=/api/v1/plaintes/**
+
+        - id: evenements
+          uri: http://localhost:8099
+          predicates:
+            - Path=/api/v1/evenements/**
+
+        - id: annonces
+          uri: http://localhost:9000
+          predicates:
+            - Path=/api/v1/annonces/**
+
+        - id: contrats
+          uri: http://localhost:9001
+          predicates:
+            - Path=/api/v1/contrats/**
+
     discovery:
       enabled: true
     config:

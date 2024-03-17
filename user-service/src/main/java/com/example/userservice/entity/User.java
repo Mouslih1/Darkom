@@ -37,14 +37,15 @@ public class User {
     private String lastname;
     private String address;
     private String ville;
-    @CreatedBy
-    private String agentCreatedBy;
-    @LastModifiedBy
-    private String agentUpdatedBy;
+
     private String telephone;
     @Enumerated(EnumType.STRING)
     private Role role;
     private LocalDate dateNaissance;
+    @CreatedBy
+    private String agentCreatedBy;
+    @LastModifiedBy
+    private String agentUpdatedBy;
     @CreatedDate
     private LocalDateTime createdAt;
     @LastModifiedDate

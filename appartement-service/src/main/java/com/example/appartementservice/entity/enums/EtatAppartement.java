@@ -4,5 +4,4 @@ public enum EtatAppartement {
 
     LIBRE,
     OCCUPER,
-    EN_ATTENTE
 }

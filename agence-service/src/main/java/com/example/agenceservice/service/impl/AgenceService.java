@@ -27,6 +27,7 @@ public class AgenceService implements IAgenceService {
 
     private final IAgenceRepository agenceRepository;
     private final ModelMapper modelMapper;
+    @Qualifier("com.example.agenceservice.client.MediaClient")
     private final MediaClient mediaClient;
     private static final String AGENCE_NOT_FOUND = "Agence not found with this id : ";
 

@@ -4,5 +4,4 @@ public enum StatusImmeuble
 {
     OCCUPER,
     NON_OCCUPER,
-    EN_CONSTRUCTION
 }

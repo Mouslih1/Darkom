@@ -139,4 +139,10 @@ public class UserService implements IUserService {
         userRequest.setAgenceId(1L);
         return saveUserAndMedia(userRequest);
     }
+
+    @Override
+    public void updatePassword(Long id, UserDto userDto)
+    {
+
+    }
 }
