@@ -1,8 +1,6 @@
-package com.example.agenceservice.exception.advice;
+package com.example.userservice.exceptions.advice;
 
-import com.example.agenceservice.exception.Error;
-import com.example.agenceservice.exception.MediaClientException;
-import com.example.agenceservice.exception.NotFoundException;
+import com.example.userservice.exceptions.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -33,13 +31,5 @@ public class ApplicationExceptionHandler {
         });
 
         return errorMap;
-    }
-
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(MediaClientException.class)
-    public ResponseEntity<Error> hanldeCircuitBreakerException(MediaClientException exception)
-    {
-        Error error = new Error(exception.getMessage());
-        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 }

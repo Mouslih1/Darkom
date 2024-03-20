@@ -13,4 +13,14 @@ spring:
       ddl-auto: update
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
-
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: maromouslih@gmail.com
+    password: agznniyauptyizvh
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true

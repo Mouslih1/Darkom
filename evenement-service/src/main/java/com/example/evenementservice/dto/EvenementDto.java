@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
@@ -18,12 +19,12 @@ public class EvenementDto {
     private String sujet;
     @NotBlank
     private String description;
-    @NotBlank
+    @NotNull
     private Date dateEvenement;
     @NotNull
     private Long appartementId;
     private String propreitaireCreatedBy;
     private String propreitaireUpdatedBy;
-    private Date createdAt;
-    private Date updatedAt;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }
