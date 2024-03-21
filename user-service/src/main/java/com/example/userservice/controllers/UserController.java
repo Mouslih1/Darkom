@@ -20,19 +20,17 @@ public class UserController {
 
     private final IUserService userService;
 
-    //TODO: INCLUDE THE ID OF AGENCE
     @PostMapping("/register")
     public ResponseEntity<UserResponse> register(
-            /*@RequestHeader("agenceId") Long agenceId ,*/
+            @RequestHeader("agenceId") Long agenceId ,
             @ModelAttribute @Valid UserRequest userRequest
     )
     {
-        return new ResponseEntity<>(userService.save(userRequest), HttpStatus.CREATED);
+        return new ResponseEntity<>(userService.save(agenceId, userRequest), HttpStatus.CREATED);
     }
 
     @PostMapping("/admin")
     public ResponseEntity<UserResponse> registerByAdmin(
-            /*@RequestHeader("agenceId") Long agenceId ,*/
             @RequestBody @Valid UserRequest userRequest
     )
     {

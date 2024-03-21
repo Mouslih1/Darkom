@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface IUserService {
 
-    UserResponse save(UserRequest userRequest);
+    UserResponse save(Long agenceId,UserRequest userRequest);
     UserResponse getById(Long id);
     List<UserResponse> all();
     UserResponse update(Long id,  UserRequest userRequest);

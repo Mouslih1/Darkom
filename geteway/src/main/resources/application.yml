@@ -15,54 +15,75 @@ spring:
           predicates:
             - Path=/api/v1/users/**
 
+
         - id: login
           uri: http://localhost:8085
           predicates:
             - Path=/login
 
+
         - id: agences
           uri: http://localhost:8088
           predicates:
             - Path=/api/v1/agences/**
+          filters:
+            - AuthenticationFilter
 
         - id: medias
           uri: http://localhost:8086
           predicates:
             - Path=/api/v1/medias/**
+          filters:
+            - AuthenticationFilter
 
         - id: immeubles
           uri: http://localhost:8187
           predicates:
             - Path=/api/v1/immeubles/**
+          filters:
+            - AuthenticationFilter
 
         - id: appartements
           uri: http://localhost:8087
           predicates:
             - Path=/api/v1/appartements/**
+          filters:
+            - AuthenticationFilter
+
         - id: travaux
           uri: http://localhost:8097
           predicates:
             - Path=/api/v1/travaux/**
+          filters:
+            - AuthenticationFilter
 
         - id: plaintes
           uri: http://localhost:8098
           predicates:
             - Path=/api/v1/plaintes/**
+          filters:
+            - AuthenticationFilter
 
         - id: evenements
           uri: http://localhost:8099
           predicates:
             - Path=/api/v1/evenements/**
+          filters:
+            - AuthenticationFilter
 
         - id: annonces
           uri: http://localhost:9000
           predicates:
             - Path=/api/v1/annonces/**
+          filters:
+            - AuthenticationFilter
 
         - id: contrats
           uri: http://localhost:9001
           predicates:
             - Path=/api/v1/contrats/**
+          filters:
+            - AuthenticationFilter
 
     discovery:
       enabled: true

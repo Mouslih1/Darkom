@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.example.userservice.constant.JWTUtil.*;
+import static com.example.userservice.constants.JWTUtil.*;
 
 @Component
 public class JWTHelper {

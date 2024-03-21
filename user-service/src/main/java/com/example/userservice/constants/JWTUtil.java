@@ -1,4 +1,4 @@
-package com.example.userservice.constant;
+package com.example.userservice.constants;
 
 public class JWTUtil {
     public static final long EXPIRE_ACCESS_TOKEN = 10 * 60 * 1000;

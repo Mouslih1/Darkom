@@ -1,6 +1,9 @@
-package com.example.userservice.entities;
+package com.example.paymentsyndecalservice.entities;
 
-import com.example.userservice.entities.enums.Role;
+
+import com.example.paymentsyndecalservice.entities.enums.MethodePaymentSyndecal;
+import com.example.paymentsyndecalservice.entities.enums.StatusPaymentSyndecal;
+import com.example.paymentsyndecalservice.entities.enums.TypePaymentSyndecal;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.SQLDelete;
@@ -11,46 +14,35 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "users")
+@Table(name = "payment_syndecals")
 @Getter
 @Setter
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-@SQLDelete(sql = "UPDATE users SET is_delete = true WHERE id=?")
+@SQLDelete(sql = "UPDATE payment_syndecals SET is_delete = true WHERE id=?")
 @Where(clause = "is_delete = false")
 @EntityListeners(AuditingEntityListener.class)
 @Builder
-public class User {
+public class PaymentSyndecal {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(unique = true)
-    private String username;
-    @Column(unique = true)
-    private String email;
-    private String firstname;
-    private String lastname;
-    private String address;
-    private String password;
-    private String telephone;
-
-    @Enumerated(EnumType.STRING)
-    private Role role;
-    private LocalDate dateNaissance;
+    private String description;
+    private double montantPaye;
+    private TypePaymentSyndecal typePaymentSyndecal;
+    private MethodePaymentSyndecal methodePaymentSyndecal;
+    private StatusPaymentSyndecal statusPaymentSyndecal;
     @CreatedBy
-    private String agentCreatedBy;
+    private String propreitaireCreatedBy;
     @LastModifiedBy
-    private String agentUpdatedBy;
+    private String propreitaireUpdatedBy;
     @CreatedDate
     private LocalDateTime createdAt;
     @LastModifiedDate
-    private LocalDateTime updatedAt;
-    private Long agenceId;
-    private boolean isDelete = Boolean.FALSE;
+    private LocalDateTime updateAt;
 }

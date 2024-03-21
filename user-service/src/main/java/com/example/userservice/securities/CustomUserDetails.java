@@ -37,7 +37,7 @@ public class CustomUserDetails implements UserDetails {
     private Set<GrantedAuthority> buildAuthorities(Role role)
     {
         Set<GrantedAuthority> authorities = new HashSet<>();
-        authorities.add(new SimpleGrantedAuthority(role.name()));
+        authorities.add(new SimpleGrantedAuthority(role.toString()));
 
         return authorities;
     }

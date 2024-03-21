@@ -1,6 +1,7 @@
 package com.example.userservice.securities;
 
 import com.example.userservice.filters.JWTAuthentificationFilter;
+import com.example.userservice.filters.JWTAuthorizationFilter;
 import com.example.userservice.helpers.JWTHelper;
 import com.example.userservice.repositories.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -38,6 +40,7 @@ public class SecurityConfig {
             auth.anyRequest().authenticated();
         });
         http.addFilter(new JWTAuthentificationFilter(authenticationManager(http.getSharedObject(AuthenticationConfiguration.class)) ,jwtHelper, iUserRepository));
+        http.addFilterBefore(new JWTAuthorizationFilter(jwtHelper), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

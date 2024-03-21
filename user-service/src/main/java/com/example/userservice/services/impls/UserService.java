@@ -13,6 +13,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +33,7 @@ public class UserService implements IUserService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public UserResponse save(/* Long agenceId , */UserRequest userRequest)
+    public UserResponse save(Long agenceId , UserRequest userRequest)
     {
         emailSenderService.sendEmail(
                 userRequest.getEmail(),
@@ -40,7 +41,7 @@ public class UserService implements IUserService {
                 "This is your password : " + userRequest.getPassword()
         );
 
-        userRequest.setAgenceId(2L);
+        userRequest.setAgenceId(agenceId);
         userRequest.setPassword(passwordEncoder.encode(userRequest.getPassword()));
 
         return saveUserAndMedia(userRequest);
@@ -150,7 +151,6 @@ public class UserService implements IUserService {
     @Override
     public UserResponse saveByAdmin(UserRequest userRequest)
     {
-        userRequest.setAgenceId(1L);
         return saveUserAndMedia(userRequest);
     }
 
