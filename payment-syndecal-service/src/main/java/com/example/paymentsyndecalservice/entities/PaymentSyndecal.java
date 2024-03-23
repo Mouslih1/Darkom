@@ -1,6 +1,5 @@
 package com.example.paymentsyndecalservice.entities;
 
-
 import com.example.paymentsyndecalservice.entities.enums.MethodePaymentSyndecal;
 import com.example.paymentsyndecalservice.entities.enums.StatusPaymentSyndecal;
 import com.example.paymentsyndecalservice.entities.enums.TypePaymentSyndecal;
@@ -34,15 +33,19 @@ public class PaymentSyndecal {
     private Long id;
     private String description;
     private double montantPaye;
+    @Enumerated(EnumType.STRING)
     private TypePaymentSyndecal typePaymentSyndecal;
+    @Enumerated(EnumType.STRING)
     private MethodePaymentSyndecal methodePaymentSyndecal;
+    @Enumerated(EnumType.STRING)
     private StatusPaymentSyndecal statusPaymentSyndecal;
     @CreatedBy
-    private String propreitaireCreatedBy;
+    private String agentCreatedBy;
     @LastModifiedBy
-    private String propreitaireUpdatedBy;
+    private String agentUpdatedBy;
     @CreatedDate
     private LocalDateTime createdAt;
     @LastModifiedDate
     private LocalDateTime updateAt;
+    private boolean isDelete = Boolean.FALSE;
 }

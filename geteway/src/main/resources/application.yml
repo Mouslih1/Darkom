@@ -14,7 +14,8 @@ spring:
           uri: http://localhost:8085
           predicates:
             - Path=/api/v1/users/**
-
+          filters:
+            - AuthenticationFilter
 
         - id: login
           uri: http://localhost:8085
@@ -82,6 +83,27 @@ spring:
           uri: http://localhost:9001
           predicates:
             - Path=/api/v1/contrats/**
+          filters:
+            - AuthenticationFilter
+
+        - id: payment-syndecals
+          uri: http://localhost:9002
+          predicates:
+            - Path=/api/v1/payment-syndecals/**
+          filters:
+            - AuthenticationFilter
+
+        - id: payment-contrat-ventes
+          uri: http://localhost:9003
+          predicates:
+            - Path=/api/v1/payment-contrat-ventes/**
+          filters:
+            - AuthenticationFilter
+
+        - id: payment-contrat-loyers
+          uri: http://localhost:9003
+          predicates:
+            - Path=/api/v1/payment-contrat-loyers/**
           filters:
             - AuthenticationFilter
 

@@ -11,9 +11,7 @@ import static com.exemple.geteway.constants.JWTUtil.SECRET;
 @Component
 public class JwtUtil {
 
-
-    public void validateToken(final String token)
-    {
+    public void validateToken(final String token) {
         Algorithm algorithm = Algorithm.HMAC256(SECRET);
         JWT.require(algorithm).build().verify(token);
     }

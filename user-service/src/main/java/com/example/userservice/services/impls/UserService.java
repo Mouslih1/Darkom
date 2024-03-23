@@ -13,7 +13,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -106,7 +105,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public UserResponse updateLogo(Long id, UserRequestLogo userRequestLogo)
+    public UserResponse updatePhotoProfil(Long id, UserRequestLogo userRequestLogo)
     {
         User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException(USER_NOT_FOUND + id));
         List<MediaDto> mediaDto = new ArrayList<>();
@@ -155,8 +154,24 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public void updatePassword(Long id, UserDto userDto)
+    public boolean updatePassword(Long id, UserPasswordDto userPasswordDto)
     {
+        User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException(USER_NOT_FOUND + id));
 
+        if(passwordEncoder.matches(userPasswordDto.getCurrentPassword(), user.getPassword()))
+        {
+            emailSenderService.sendEmail(
+                    user.getEmail(),
+                    "Take you new password for not forget it.",
+                    "This is your new password : " + userPasswordDto.getNewPassword()
+            );
+
+            user.setPassword(passwordEncoder.encode(userPasswordDto.getNewPassword()));
+            userRepository.save(user);
+
+            return true;
+        }
+
+        return false;
     }
 }

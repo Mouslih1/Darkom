@@ -1,5 +1,6 @@
 package com.example.userservice.controllers;
 
+import com.example.userservice.dtos.UserPasswordDto;
 import com.example.userservice.dtos.UserRequest;
 import com.example.userservice.dtos.UserRequestLogo;
 import com.example.userservice.dtos.UserResponse;
@@ -51,15 +52,21 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserResponse> update(@PathVariable Long id, @RequestBody @Valid UserRequest userRequest)
+    public ResponseEntity<UserResponse> update(
+            @PathVariable Long id,
+            @RequestBody @Valid UserRequest userRequest
+    )
     {
         return new ResponseEntity<>(userService.update(id, userRequest), HttpStatus.OK);
     }
 
     @PutMapping("/logo/{id}")
-    public ResponseEntity<UserResponse> updateLogo(@PathVariable Long id, @ModelAttribute @Valid UserRequestLogo userRequestLogo)
+    public ResponseEntity<UserResponse> updatePhotoProfil(
+            @PathVariable Long id,
+            @ModelAttribute @Valid UserRequestLogo userRequestLogo
+    )
     {
-        return new ResponseEntity<>(userService.updateLogo(id, userRequestLogo), HttpStatus.OK);
+        return new ResponseEntity<>(userService.updatePhotoProfil(id, userRequestLogo), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
@@ -81,5 +88,21 @@ public class UserController {
     public ResponseEntity<UserResponse> byIdAndAgence(@PathVariable Long userId, @PathVariable Long agenceId)
     {
         return new ResponseEntity<>(userService.byIdAndAgence(userId, agenceId), HttpStatus.OK);
+    }
+
+    @PutMapping("/update-password/{id}")
+    public ResponseEntity<Error> updatePassword(
+            @PathVariable Long id,
+            @RequestBody @Valid UserPasswordDto userPasswordDto
+    )
+    {
+        boolean updatedPassword = userService.updatePassword(id, userPasswordDto);
+
+        if(updatedPassword)
+        {
+            return new ResponseEntity<>(new Error("Password updated successfully."), HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>(new Error("Password not updated you have problem."), HttpStatus.BAD_REQUEST);
     }
 }
