@@ -16,8 +16,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Entity
 @Table(name = "payment_contrat_loyers")
 @SQLDelete(sql = "UPDATE payment_contrat_loyers SET is_delete = true WHERE id=?")
-@Where(clause = "is_delete = false")
-@EntityListeners(AuditingEntityListener.class)
 @Builder
 public class PaymentContratLoyer extends PaymentContrat{
 

@@ -4,5 +4,6 @@ public enum StatusPaymentContrat {
 
     PAYE,
     PAYE_EN_RETARD,
-    NO_PAYE
+    NO_PAYE,
+    AVANCE
 }

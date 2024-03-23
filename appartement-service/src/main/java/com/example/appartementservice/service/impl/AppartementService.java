@@ -90,7 +90,8 @@ public class AppartementService implements IAppartementService {
         {
             for (Appartement appartement : appartements)
             {
-                if (appartement.getEtatAppartement() != null && appartement.getEtatAppartement().equals(EtatAppartement.LIBRE)) {
+                if (appartement.getEtatAppartement() != null && appartement.getEtatAppartement().equals(EtatAppartement.LIBRE))
+                {
                     return true;
                 }
             }
@@ -112,6 +113,7 @@ public class AppartementService implements IAppartementService {
         appartement.setStatusAppartement(appartementDto.getStatusAppartement());
         appartement.setImmeubleId(appartementDto.getImmeubleId());
         appartement.setEtatAppartement(appartementDto.getEtatAppartement());
+
         Appartement appartementUpdated = iAppartementRepository.save(appartement);
 
         updateStatusImmeuble(appartementUpdated.getImmeubleId());
