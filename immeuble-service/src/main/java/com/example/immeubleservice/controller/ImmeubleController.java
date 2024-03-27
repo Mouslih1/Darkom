@@ -5,6 +5,8 @@ import com.example.immeubleservice.entity.enums.StatusImmeuble;
 import com.example.immeubleservice.exception.Error;
 import com.example.immeubleservice.service.IimmeubleService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,9 +22,9 @@ public class ImmeubleController {
     private final IimmeubleService iimmeubleService;
 
     @PostMapping
-    public ResponseEntity<ImmeubleDto> save(@RequestBody @Valid ImmeubleDto immeubleDto)
+    public ResponseEntity<ImmeubleDto> save(@RequestHeader("agenceId") Long agenceId,@RequestBody @Valid ImmeubleDto immeubleDto)
     {
-        return new ResponseEntity<>(iimmeubleService.save(immeubleDto), HttpStatus.CREATED);
+        return new ResponseEntity<>(iimmeubleService.save(agenceId,immeubleDto), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
@@ -49,9 +51,12 @@ public class ImmeubleController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ImmeubleDto>> all()
+    public ResponseEntity<List<ImmeubleDto>> all(
+            @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
+            @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize
+    )
     {
-        return new ResponseEntity<>(iimmeubleService.all(), HttpStatus.OK);
+        return new ResponseEntity<>(iimmeubleService.all(pageNo, pageSize), HttpStatus.OK);
     }
 
     @PutMapping("/status/{id}")

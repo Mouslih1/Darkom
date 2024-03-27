@@ -11,6 +11,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -82,9 +85,10 @@ public class AgenceService implements IAgenceService {
 
 
     @Override
-    public List<AgenceResponse> all()
+    public List<AgenceResponse> all(int pageNo, int pageSize)
     {
-        List<Agence> agences = agenceRepository.findAll();
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<Agence> agences = agenceRepository.findAll(pageable);
 
         return agences.stream()
                 .map(agence -> {

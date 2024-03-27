@@ -9,7 +9,7 @@ public interface IContratService {
 
     ContratDto save(ContratDto contratDto);
     ContratDto byId(Long id);
-    List<ContratDto> all();
+    List<ContratDto> all(int pageNo, int pageSize);
     ContratDto update(Long id,  ContratDto contratDto);
     void delete(Long id);
     void updateStatusImmeuble(Long immeubleId);

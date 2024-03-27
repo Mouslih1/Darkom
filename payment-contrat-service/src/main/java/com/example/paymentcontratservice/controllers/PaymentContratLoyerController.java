@@ -26,9 +26,12 @@ public class PaymentContratLoyerController {
     }
 
     @GetMapping
-    public ResponseEntity<List<PaymentContratLoyerDto>> all()
+    public ResponseEntity<List<PaymentContratLoyerDto>> all(
+            @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
+            @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize
+    )
     {
-        return new ResponseEntity<>(iPaymentContratLoyerService.all(), HttpStatus.OK);
+        return new ResponseEntity<>(iPaymentContratLoyerService.all(pageNo, pageSize), HttpStatus.OK);
     }
 
     @PutMapping("/{id}")

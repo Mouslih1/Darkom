@@ -9,6 +9,9 @@ import com.example.immeubleservice.service.IimmeubleService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,9 +28,8 @@ public class ImmeubleService implements IimmeubleService {
     private static final String IMMEUBLE_NOT_FOUND = "Immeuble not found with this id : ";
 
     @Override
-    public ImmeubleDto save(ImmeubleDto immeubleDto)
+    public ImmeubleDto save(Long agenceId, ImmeubleDto immeubleDto)
     {
-        immeubleDto.setAgenceId(1L);
         Immeuble immeuble = iimeubleRepository.save(modelMapper.map(immeubleDto, Immeuble.class));
         return modelMapper.map(immeuble, ImmeubleDto.class);
     }
@@ -42,7 +44,6 @@ public class ImmeubleService implements IimmeubleService {
         immeuble.setNumberEtage(immeubleDto.getNumberEtage());
         immeuble.setNumberApparetement(immeubleDto.getNumberApparetement());
         immeuble.setAnneeConstruction(immeubleDto.getAnneeConstruction());
-        immeuble.setAgenceId(1L);
         immeuble.setStatusImmeuble(immeubleDto.getStatusImmeuble());
 
         Immeuble immeubleUpdated = iimeubleRepository.save(immeuble);
@@ -50,9 +51,10 @@ public class ImmeubleService implements IimmeubleService {
     }
 
     @Override
-    public List<ImmeubleDto> all()
+    public List<ImmeubleDto> all(int pageNo, int pageSize)
     {
-        List<Immeuble> immeubles = iimeubleRepository.findAll();
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<Immeuble> immeubles = iimeubleRepository.findAll(pageable);
         return immeubles
                 .stream()
                 .map((immeuble) -> modelMapper.map(immeuble, ImmeubleDto.class))

@@ -10,7 +10,7 @@ public interface IAnnonceService {
 
     AnnonceResponse save(AnnonceRequest annonceRequest);
     AnnonceResponse byId(Long id);
-    List<AnnonceResponse> all();
+    List<AnnonceResponse> all(int pageNo, int pageSize);
     AnnonceResponse update(Long id,  AnnonceRequest annonceRequest);
     AnnonceResponse updateAnnoncePhoto(Long id, AnnonceRequestPhoto annonceRequestPhoto);
     void delete(Long id);

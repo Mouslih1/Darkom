@@ -25,9 +25,12 @@ public class EvenementController {
     }
 
     @GetMapping
-    public ResponseEntity<List<EvenementDto>> all()
+    public ResponseEntity<List<EvenementDto>> all(
+            @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
+            @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize
+    )
     {
-        return new ResponseEntity<>(iEvenementService.all(), HttpStatus.OK);
+        return new ResponseEntity<>(iEvenementService.all(pageNo, pageSize), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")

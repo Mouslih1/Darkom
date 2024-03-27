@@ -7,6 +7,9 @@ import com.example.plainte.repository.IPlainteRepository;
 import com.example.plainte.service.IPlainteService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,9 +39,11 @@ public class PlainteService implements IPlainteService {
     }
 
     @Override
-    public List<PlainteDto> all()
+    public List<PlainteDto> all(int pageNo, int pageSize)
     {
-        List<Plainte> plaintes = iPlainteRepository.findAll();
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<Plainte> plaintes = iPlainteRepository.findAll(pageable);
+
         return plaintes
                 .stream()
                 .map((plainte) -> modelMapper.map(plainte, PlainteDto.class))

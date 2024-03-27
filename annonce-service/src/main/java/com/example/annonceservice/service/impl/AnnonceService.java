@@ -12,6 +12,9 @@ import com.example.annonceservice.repository.IAnnonceRepository;
 import com.example.annonceservice.service.IAnnonceService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -68,9 +71,10 @@ public class AnnonceService implements IAnnonceService {
     }
 
     @Override
-    public List<AnnonceResponse> all()
+    public List<AnnonceResponse> all(int pageNo, int pageSize)
     {
-        List<Annonce> annonces = iAnnonceRepository.findAll();
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<Annonce> annonces = iAnnonceRepository.findAll(pageable);
 
         return annonces
                 .stream()

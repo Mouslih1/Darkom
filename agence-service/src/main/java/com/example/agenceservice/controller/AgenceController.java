@@ -5,7 +5,6 @@ import com.example.agenceservice.dto.AgenceRequest;
 import com.example.agenceservice.dto.AgenceResponse;
 import com.example.agenceservice.exception.Error;
 import com.example.agenceservice.service.impl.AgenceService;
-import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -51,9 +50,12 @@ public class AgenceController {
     }
 
     @GetMapping
-    public ResponseEntity<List<AgenceResponse>> all()
+    public ResponseEntity<List<AgenceResponse>> all(
+            @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
+            @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize
+    )
     {
-        return new ResponseEntity<>(agenceService.all(), HttpStatus.OK);
+        return new ResponseEntity<>(agenceService.all(pageNo, pageSize), HttpStatus.OK);
     }
 
     @GetMapping("/{agenceId}")

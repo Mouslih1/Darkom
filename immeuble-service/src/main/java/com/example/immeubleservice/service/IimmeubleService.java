@@ -7,9 +7,9 @@ import java.util.List;
 
 public interface IimmeubleService {
 
-    ImmeubleDto save(ImmeubleDto immeubleDto);
+    ImmeubleDto save(Long agenceId, ImmeubleDto immeubleDto);
     ImmeubleDto update(Long id, ImmeubleDto immeubleDto);
-    List<ImmeubleDto> all();
+    List<ImmeubleDto> all(int pageNo, int pageSize);
     ImmeubleDto byId(Long id);
     void delete(Long id);
     void updateEtatImmeuble(Long id, StatusImmeuble statusImmeuble);

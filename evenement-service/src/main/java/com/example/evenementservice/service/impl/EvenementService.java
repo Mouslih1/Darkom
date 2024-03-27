@@ -7,6 +7,9 @@ import com.example.evenementservice.repository.IEvenementRepository;
 import com.example.evenementservice.service.IEvenementService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -46,9 +49,11 @@ public class EvenementService implements IEvenementService {
     }
 
     @Override
-    public List<EvenementDto> all()
+    public List<EvenementDto> all(int pageNo, int pageSize)
     {
-        List<Evenement> evenements = iEvenementRepository.findAll();
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<Evenement> evenements = iEvenementRepository.findAll(pageable);
+
         return evenements
                 .stream()
                 .map((element) -> modelMapper.map(element, EvenementDto.class))

@@ -13,7 +13,7 @@ public interface IAgenceService {
     AgenceResponse save(AgenceRequest agenceRequest);
     AgenceResponse update(Long id, AgenceRequest agenceRequest);
     AgenceResponse updateLogo(Long id, AgenceLogoRequest agenceLogoRequest);
-    List<AgenceResponse> all();
+    List<AgenceResponse> all(int pageNo, int pageSize);
     AgenceResponse byId(Long id);
     void delete(Long id);
 }

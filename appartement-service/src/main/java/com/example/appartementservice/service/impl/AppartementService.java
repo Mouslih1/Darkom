@@ -13,6 +13,9 @@ import com.example.appartementservice.service.IAppartementService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -122,9 +125,10 @@ public class AppartementService implements IAppartementService {
     }
 
     @Override
-    public List<AppartementDto> all()
+    public List<AppartementDto> all(int pageNo, int pageSize)
     {
-        List<Appartement> appartements = iAppartementRepository.findAll();
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<Appartement> appartements = iAppartementRepository.findAll(pageable);
         return appartements
                 .stream()
                 .map((appartement) -> modelMapper.map(appartement, AppartementDto.class))

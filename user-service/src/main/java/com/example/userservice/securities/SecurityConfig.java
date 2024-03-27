@@ -36,7 +36,7 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable);
         http.sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.authorizeHttpRequests(auth ->{
-            auth.requestMatchers("/api/v1/users/register").permitAll();
+           // auth.requestMatchers("/api/v1/users/register").permitAll();
             auth.anyRequest().authenticated();
         });
         http.addFilter(new JWTAuthentificationFilter(authenticationManager(http.getSharedObject(AuthenticationConfiguration.class)) ,jwtHelper, iUserRepository));

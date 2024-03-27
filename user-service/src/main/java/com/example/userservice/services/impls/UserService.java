@@ -10,6 +10,9 @@ import com.example.userservice.services.IUserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -71,9 +74,10 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public List<UserResponse> all()
+    public List<UserResponse> all(int pageNo, int pageSize)
     {
-        List<User> users = userRepository.findAll();
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<User> users = userRepository.findAll(pageable);
 
         return users
                 .stream()

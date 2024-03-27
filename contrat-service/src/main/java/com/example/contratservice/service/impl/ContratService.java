@@ -16,6 +16,9 @@ import com.example.contratservice.repository.IContratRepository;
 import com.example.contratservice.service.IContratService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -119,9 +122,11 @@ public class ContratService implements IContratService {
     }
 
     @Override
-    public List<ContratDto> all()
+    public List<ContratDto> all(int pageNo, int pageSize)
     {
-        List<Contrat> contrats = iContratRepository.findAll();
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<Contrat> contrats = iContratRepository.findAll(pageable);
+
         return contrats
                 .stream()
                 .map((contrat) -> modelMapper.map(contrat, ContratDto.class))

@@ -9,6 +9,6 @@ public interface IEvenementService {
     EvenementDto save(EvenementDto evenementDto);
     EvenementDto update(Long id, EvenementDto evenementDto);
     void delete(Long id);
-    List<EvenementDto> all();
+    List<EvenementDto> all(int pageNo, int pageSize);
     EvenementDto byId(Long id);
 }

@@ -31,9 +31,12 @@ public class ContratController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ContratDto>> all()
+    public ResponseEntity<List<ContratDto>> all(
+            @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
+            @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize
+    )
     {
-        return new ResponseEntity<>(iContratService.all(), HttpStatus.OK);
+        return new ResponseEntity<>(iContratService.all(pageNo, pageSize), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")

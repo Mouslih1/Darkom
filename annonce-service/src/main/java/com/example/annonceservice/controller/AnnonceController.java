@@ -28,9 +28,12 @@ public class AnnonceController {
     }
 
     @GetMapping
-    public ResponseEntity<List<AnnonceResponse>> all()
+    public ResponseEntity<List<AnnonceResponse>> all(
+            @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
+            @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize
+    )
     {
-        return new ResponseEntity<>(iAnnonceService.all(), HttpStatus.OK);
+        return new ResponseEntity<>(iAnnonceService.all(pageNo, pageSize), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")

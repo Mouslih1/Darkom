@@ -31,10 +31,6 @@ public class Media {
     private Long id;
     private String filename;
     private String mediaUuid;
-    @CreatedBy
-    private String agentCreatedBy;
-    @LastModifiedBy
-    private String agentUpdatedBy;
     private String uri;
     private Long relatedId;
     @Enumerated(EnumType.STRING)

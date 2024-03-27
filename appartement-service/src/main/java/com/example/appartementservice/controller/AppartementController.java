@@ -42,9 +42,12 @@ public class AppartementController {
     }
 
     @GetMapping
-    public ResponseEntity<List<AppartementDto>> all()
+    public ResponseEntity<List<AppartementDto>> all(
+            @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
+            @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize
+    )
     {
-        return new ResponseEntity<>(iAppartementService.all(), HttpStatus.OK);
+        return new ResponseEntity<>(iAppartementService.all(pageNo, pageSize), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")

@@ -24,9 +24,12 @@ public class PlainteController {
     }
 
     @GetMapping
-    public ResponseEntity<List<PlainteDto>> all()
+    public ResponseEntity<List<PlainteDto>> all(
+            @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
+            @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize
+    )
     {
-        return new ResponseEntity<>(iPlainteService.all(), HttpStatus.OK);
+        return new ResponseEntity<>(iPlainteService.all(pageNo, pageSize), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")

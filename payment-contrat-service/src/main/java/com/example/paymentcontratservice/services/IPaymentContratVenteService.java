@@ -11,6 +11,6 @@ public interface IPaymentContratVenteService {
     PaymentContratVenteDto save(PaymentContratVenteDto paymentContratVenteDto);
     PaymentContratVenteDto update(Long id, PaymentContratVenteDto paymentContratVenteDto);
     void delete(Long id);
-    List<PaymentContratVenteDto> all();
+    List<PaymentContratVenteDto> all(int pageNo, int pageSize);
     PaymentContratVenteDto byId(Long id);
 }

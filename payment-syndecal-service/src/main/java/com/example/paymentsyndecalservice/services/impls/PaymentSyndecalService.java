@@ -50,7 +50,7 @@ public class PaymentSyndecalService implements IPaymentSyndecalService {
     }
 
     @Override
-    public List<PaymentSyndecalDto> all()
+    public List<PaymentSyndecalDto> all(int pageNo, int pageSize)
     {
         List<PaymentSyndecal> paymentSyndecals = iPaymentSyndecalRepository.findAll();
         return paymentSyndecals

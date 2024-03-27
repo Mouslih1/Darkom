@@ -8,6 +8,9 @@ import com.example.travauxservice.service.ITravauxService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -50,9 +53,11 @@ public class TravauxService implements ITravauxService {
     }
 
     @Override
-    public List<TravauxDto> all()
+    public List<TravauxDto> all(int pageNo, int pageSize)
     {
-        List<Travaux> travauxes = iTravauxRepository.findAll();
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<Travaux> travauxes = iTravauxRepository.findAll(pageable);
+
         return travauxes
                 .stream()
                 .map((travaux) -> modelMapper.map(travaux, TravauxDto.class))

@@ -39,10 +39,12 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<UserResponse>> all()
+    public ResponseEntity<List<UserResponse>> all(
+            @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
+            @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize
+    )
     {
-        List<UserResponse> users = userService.all();
-        return new ResponseEntity<>(users, HttpStatus.OK);
+        return new ResponseEntity<>( userService.all(pageNo, pageSize), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")

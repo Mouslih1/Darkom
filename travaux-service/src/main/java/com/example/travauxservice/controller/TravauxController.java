@@ -25,9 +25,12 @@ public class TravauxController {
     }
 
     @GetMapping
-    public ResponseEntity<List<TravauxDto>> all()
+    public ResponseEntity<List<TravauxDto>> all(
+            @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
+            @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize
+    )
     {
-        return new ResponseEntity<>(iTravauxService.all(), HttpStatus.OK);
+        return new ResponseEntity<>(iTravauxService.all(pageNo, pageSize), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")

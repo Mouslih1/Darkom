@@ -9,7 +9,7 @@ public interface IUserService {
 
     UserResponse save(Long agenceId,UserRequest userRequest);
     UserResponse getById(Long id);
-    List<UserResponse> all();
+    List<UserResponse> all(int pageNo, int pageSize);
     UserResponse update(Long id,  UserRequest userRequest);
     UserResponse updatePhotoProfil(Long id, UserRequestLogo userRequestLogo);
     void delete(Long id);

@@ -24,9 +24,12 @@ public class PaymentSyndecalController {
     }
 
     @GetMapping
-    public ResponseEntity<List<PaymentSyndecalDto>> all()
+    public ResponseEntity<List<PaymentSyndecalDto>> all(
+            @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
+            @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize
+    )
     {
-        return new ResponseEntity<>(iPaymentSyndecalService.all(), HttpStatus.OK);
+        return new ResponseEntity<>(iPaymentSyndecalService.all(pageNo, pageSize), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")

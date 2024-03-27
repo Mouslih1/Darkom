@@ -7,6 +7,9 @@ import com.example.paymentcontratservice.repositories.IPaymentContratLoyerReposi
 import com.example.paymentcontratservice.services.IPaymentContratLoyerService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,7 +39,7 @@ public class PaymentContratLoyerService implements IPaymentContratLoyerService {
     {
         PaymentContratLoyer paymentContratLoyer = iPaymentContratLoyerRepository
                 .findById(id)
-                .orElseThrow(() -> new NotFoundException(PAYMENT_CONTRAT_LOYER_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundException(PAYMENT_CONTRAT_LOYER_NOT_FOUND + id));
 
         paymentContratLoyer.setContratId(paymentContratLoyerDto.getContratId());
         paymentContratLoyer.setMethodePaymentContratLoyer(paymentContratLoyerDto.getMethodePaymentContratLoyer());
@@ -56,9 +59,11 @@ public class PaymentContratLoyerService implements IPaymentContratLoyerService {
     }
 
     @Override
-    public List<PaymentContratLoyerDto> all()
+    public List<PaymentContratLoyerDto> all(int pageNo, int pageSize)
     {
-        List<PaymentContratLoyer> paymentContratLoyers = iPaymentContratLoyerRepository.findAll();
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<PaymentContratLoyer> paymentContratLoyers = iPaymentContratLoyerRepository.findAll(pageable);
+
         return paymentContratLoyers
                 .stream()
                 .map((element) -> modelMapper.map(element, PaymentContratLoyerDto.class))

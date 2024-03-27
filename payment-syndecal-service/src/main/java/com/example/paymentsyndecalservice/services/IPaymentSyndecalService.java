@@ -9,6 +9,6 @@ public interface IPaymentSyndecalService {
     PaymentSyndecalDto save(PaymentSyndecalDto paymentSyndecalDto);
     PaymentSyndecalDto update(Long id, PaymentSyndecalDto paymentSyndecalDto);
     void delete(Long id);
-    List<PaymentSyndecalDto> all();
+    List<PaymentSyndecalDto> all(int pageNo, int pageSize);
     PaymentSyndecalDto byId(Long id);
 }

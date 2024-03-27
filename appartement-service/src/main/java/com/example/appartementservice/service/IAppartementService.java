@@ -8,7 +8,7 @@ public interface IAppartementService {
 
     AppartementDto save(AppartementDto appartementDto);
     AppartementDto update(Long id, AppartementDto appartementDto);
-    List<AppartementDto> all();
+    List<AppartementDto> all(int pageNo, int pageSize);
     AppartementDto byId(Long id);
     void delete(Long id);
     List<AppartementDto> byIdAndImmeuble(Long immeubleId);

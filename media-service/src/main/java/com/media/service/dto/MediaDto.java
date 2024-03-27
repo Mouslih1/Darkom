@@ -18,8 +18,6 @@ public class MediaDto {
     private Long id;
     private String mediaUuid;
     private String filename;
-    private String agentCreatedBy;
-    private String agentUpdatedBy;
     private String uri;
     private Long relatedId;
     private MediaStatus mediaStatus;

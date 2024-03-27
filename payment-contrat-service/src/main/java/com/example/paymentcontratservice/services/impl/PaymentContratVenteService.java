@@ -62,7 +62,7 @@ public class PaymentContratVenteService implements IPaymentContratVenteService {
     }
 
     @Override
-    public List<PaymentContratVenteDto> all()
+    public List<PaymentContratVenteDto> all(int pageNo ,int pageSize)
     {
         List<PaymentContratVente> paymentContratVentes = iPaymentContratVenteRepository.findAll();
         return paymentContratVentes
