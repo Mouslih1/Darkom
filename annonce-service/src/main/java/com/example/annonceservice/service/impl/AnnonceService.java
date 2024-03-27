@@ -1,18 +1,20 @@
 package com.example.annonceservice.service.impl;
 
 import com.example.annonceservice.client.AppartementClient;
-import com.example.annonceservice.dto.AnnonceDto;
-import com.example.annonceservice.dto.AppartementDto;
+import com.example.annonceservice.client.MediaClient;
+import com.example.annonceservice.dto.*;
 import com.example.annonceservice.entity.Annonce;
+import com.example.annonceservice.entity.enums.MediaStatus;
 import com.example.annonceservice.entity.enums.StatusAppartement;
 import com.example.annonceservice.entity.enums.TypeAnnonce;
+import com.example.annonceservice.exception.NotFoundException;
 import com.example.annonceservice.repository.IAnnonceRepository;
 import com.example.annonceservice.service.IAnnonceService;
-import jakarta.ws.rs.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -22,72 +24,103 @@ public class AnnonceService implements IAnnonceService {
     private final IAnnonceRepository iAnnonceRepository;
     private final ModelMapper modelMapper;
     private final AppartementClient appartementClient;
+    private final MediaClient mediaClient;
     private static final String ANNONCE_NOT_FOUND = "Annonce not found this id : ";
 
     @Override
-    public AnnonceDto save(AnnonceDto annonceDto)
+    public AnnonceResponse save(AnnonceRequest annonceRequest)
     {
-        getTypeAnnonceAndPrixByStatusAppartement(annonceDto);
-        Annonce annonce = iAnnonceRepository.save(modelMapper.map(annonceDto, Annonce.class));
-        return modelMapper.map(annonce, AnnonceDto.class);
+        getTypeAnnonceAndPrixByStatusAppartement(annonceRequest);
+        Annonce annonce = iAnnonceRepository.save(modelMapper.map(annonceRequest, Annonce.class));
+        AnnonceResponse annonceResponse = new AnnonceResponse();
+        annonceResponse.setAnnonceDto(modelMapper.map(annonce, AnnonceDto.class));
+
+        if(annonceRequest.getMultipartFiles() != null && !annonceRequest.getMultipartFiles().isEmpty())
+        {
+            annonceResponse.setMedias(mediaClient.save(annonceRequest.getMultipartFiles(),
+                    annonce.getId(), MediaStatus.ANNONCE_PHOTO).getBody());
+        }
+
+        return annonceResponse;
     }
 
-    public void getTypeAnnonceAndPrixByStatusAppartement(AnnonceDto annonceDto)
+    public void getTypeAnnonceAndPrixByStatusAppartement(AnnonceRequest annonceRequest)
     {
-        AppartementDto appartementDto = appartementClient.byId(annonceDto.getAppartementId()).getBody();
+        AppartementDto appartementDto = appartementClient.byId(annonceRequest.getAppartementId()).getBody();
         assert appartementDto != null;
         if(appartementDto.getStatusAppartement().equals(StatusAppartement.VENTE))
         {
-            annonceDto.setTypeAnnonce(TypeAnnonce.A_VENDRE);
-            annonceDto.setPrixVente(appartementDto.getPrixVente());
-        } else if (appartementDto.getStatusAppartement().equals(StatusAppartement.LOUER))
-        {
-            annonceDto.setTypeAnnonce(TypeAnnonce.A_LOUER);
-            annonceDto.setPrixLouer(appartementDto.getPrixLocation());
-        }else {
-            annonceDto.setTypeAnnonce(TypeAnnonce.A_VENDRE_OR_A_LOUER);
-            annonceDto.setPrixLouer(appartementDto.getPrixLocation());
-            annonceDto.setPrixVente(appartementDto.getPrixVente());
+            annonceRequest.setTypeAnnonce(TypeAnnonce.A_VENDRE);
+            annonceRequest.setPrixVente(appartementDto.getPrixVente());
+        } else {
+            annonceRequest.setTypeAnnonce(TypeAnnonce.A_LOUER);
+            annonceRequest.setPrixLouer(appartementDto.getPrixLocation());
         }
-    }
-    @Override
-    public AnnonceDto byId(Long id)
-    {
-        Annonce annonce = iAnnonceRepository.findById(id).orElseThrow(() -> new NotFoundException(ANNONCE_NOT_FOUND + id));
-        return modelMapper.map(annonce, AnnonceDto.class);
     }
 
     @Override
-    public List<AnnonceDto> all()
+    public AnnonceResponse byId(Long id)
+    {
+        Annonce annonce = iAnnonceRepository.findById(id).orElseThrow(() -> new NotFoundException(ANNONCE_NOT_FOUND + id));
+        List<MediaDto> medias = mediaClient.getMediaByRelatedId(annonce.getId(), MediaStatus.ANNONCE_PHOTO).getBody();
+
+        return new AnnonceResponse(modelMapper.map(annonce, AnnonceDto.class), medias);
+    }
+
+    @Override
+    public List<AnnonceResponse> all()
     {
         List<Annonce> annonces = iAnnonceRepository.findAll();
+
         return annonces
                 .stream()
-                .map((element) -> modelMapper.map(element, AnnonceDto.class))
+                .map((annonce) -> {
+                    AnnonceDto annonceDto = modelMapper.map(annonce, AnnonceDto.class);
+                    List<MediaDto> medias = mediaClient.getMediaByRelatedId(annonceDto.getId(), MediaStatus.ANNONCE_PHOTO).getBody();
+                    return new AnnonceResponse(annonceDto, medias);
+                })
                 .toList();
     }
 
     @Override
-    public AnnonceDto update(Long id, AnnonceDto annonceDto)
+    public AnnonceResponse update(Long id, AnnonceRequest annonceRequest)
     {
-        getTypeAnnonceAndPrixByStatusAppartement(annonceDto);
+        getTypeAnnonceAndPrixByStatusAppartement(annonceRequest);
 
         Annonce annonce = iAnnonceRepository.findById(id).orElseThrow(() -> new NotFoundException(ANNONCE_NOT_FOUND + id));
-        annonce.setStatusAnnonce(annonceDto.getStatusAnnonce());
-        annonce.setDescription(annonceDto.getDescription());
-        annonce.setTitre(annonceDto.getTitre());
-        annonce.setAppartementId(annonceDto.getAppartementId());
-        annonce.setTypeAnnonce(annonceDto.getTypeAnnonce());
-        annonce.setPrixLouer(annonceDto.getPrixLouer());
-        annonce.setPrixVente(annonceDto.getPrixVente());
+        annonce.setStatusAnnonce(annonceRequest.getStatusAnnonce());
+        annonce.setDescription(annonceRequest.getDescription());
+        annonce.setTitre(annonceRequest.getTitre());
+        annonce.setAppartementId(annonceRequest.getAppartementId());
+        annonce.setTypeAnnonce(annonceRequest.getTypeAnnonce());
+        annonce.setPrixLouer(annonceRequest.getPrixLouer());
+        annonce.setPrixVente(annonceRequest.getPrixVente());
 
         Annonce annonceUpdated = iAnnonceRepository.save(annonce);
-        return modelMapper.map(annonceUpdated, AnnonceDto.class);
+        List<MediaDto> mediaDto = mediaClient.getMediaByRelatedId(annonceUpdated.getId(), MediaStatus.ANNONCE_PHOTO).getBody();
+
+        return new AnnonceResponse(modelMapper.map(annonceUpdated, AnnonceDto.class), mediaDto);
+    }
+
+    @Override
+    public AnnonceResponse updateAnnoncePhoto(Long id, AnnonceRequestPhoto annonceRequestPhoto)
+    {
+        Annonce annonce = iAnnonceRepository.findById(id).orElseThrow(() -> new NotFoundException(ANNONCE_NOT_FOUND + id));
+        List<MediaDto> mediaDto = new ArrayList<>();
+
+        if(annonceRequestPhoto.getMultipartFiles() != null && !annonceRequestPhoto.getMultipartFiles().isEmpty())
+        {
+            mediaDto = mediaClient.update(annonceRequestPhoto.getMultipartFiles(),
+                    annonce.getId(), MediaStatus.ANNONCE_PHOTO).getBody();
+        }
+
+        return new AnnonceResponse(modelMapper.map(annonce, AnnonceDto.class), mediaDto);
     }
 
     @Override
     public void delete(Long id)
     {
         iAnnonceRepository.deleteById(id);
+        mediaClient.deleteMediaByRelatedId(id, MediaStatus.ANNONCE_PHOTO);
     }
 }

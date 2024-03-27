@@ -1,6 +1,9 @@
 package com.example.annonceservice.controller;
 
 import com.example.annonceservice.dto.AnnonceDto;
+import com.example.annonceservice.dto.AnnonceRequest;
+import com.example.annonceservice.dto.AnnonceRequestPhoto;
+import com.example.annonceservice.dto.AnnonceResponse;
 import com.example.annonceservice.exception.Error;
 import com.example.annonceservice.service.IAnnonceService;
 import lombok.RequiredArgsConstructor;
@@ -19,27 +22,27 @@ public class AnnonceController {
     private final IAnnonceService iAnnonceService;
 
     @PostMapping
-    public ResponseEntity<AnnonceDto> save(@RequestBody @Valid AnnonceDto annonceDto)
+    public ResponseEntity<AnnonceResponse> save(@ModelAttribute @Valid AnnonceRequest annonceRequest)
     {
-        return new ResponseEntity<>(iAnnonceService.save(annonceDto), HttpStatus.CREATED);
+        return new ResponseEntity<>(iAnnonceService.save(annonceRequest), HttpStatus.CREATED);
     }
 
     @GetMapping
-    public ResponseEntity<List<AnnonceDto>> all()
+    public ResponseEntity<List<AnnonceResponse>> all()
     {
         return new ResponseEntity<>(iAnnonceService.all(), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<AnnonceDto> byId(@PathVariable Long id)
+    public ResponseEntity<AnnonceResponse> byId(@PathVariable Long id)
     {
         return new ResponseEntity<>(iAnnonceService.byId(id), HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<AnnonceDto> update(@PathVariable Long id, @RequestBody @Valid AnnonceDto annonceDto)
+    public ResponseEntity<AnnonceResponse> update(@PathVariable Long id, @RequestBody @Valid AnnonceRequest annonceRequest)
     {
-        return new ResponseEntity<>(iAnnonceService.update(id, annonceDto), HttpStatus.OK);
+        return new ResponseEntity<>(iAnnonceService.update(id, annonceRequest), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
@@ -48,5 +51,14 @@ public class AnnonceController {
         Error error = new Error("Annonce deleted successfully.");
         iAnnonceService.delete(id);
         return new ResponseEntity<>(error, HttpStatus.OK);
+    }
+
+    @PutMapping("/photo/{id}")
+    public ResponseEntity<AnnonceResponse> updatePhotoProfil(
+            @PathVariable Long id,
+            @ModelAttribute @Valid AnnonceRequestPhoto annonceRequestPhoto
+    )
+    {
+        return new ResponseEntity<>(iAnnonceService.updateAnnoncePhoto(id, annonceRequestPhoto), HttpStatus.OK);
     }
 }

@@ -31,7 +31,7 @@ public class FileStorageService {
     @Value("/home/maro/IdeaProjects/Darkom/images/")
     private String uploadDirectory;
 
-    public MediaDto store(MultipartFile file, String agenceCreatedBy ,Long relatedId, MediaStatus mediaType) throws IOException
+    public MediaDto store(MultipartFile file, Long relatedId, MediaStatus mediaType) throws IOException
     {
         String filename = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
 
@@ -65,7 +65,6 @@ public class FileStorageService {
 
         return MediaDto.builder()
                 .filename(newFilename)
-                .agentCreatedBy(agenceCreatedBy)
                 .mediaUuid(relatedId + "-" + UUID.randomUUID().toString().substring(0,4))
                 .relatedId(relatedId)
                 .mediaStatus(MediaStatus.valueOf(mediaType.toString()))

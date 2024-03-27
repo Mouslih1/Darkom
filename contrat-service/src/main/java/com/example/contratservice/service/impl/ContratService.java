@@ -58,7 +58,8 @@ public class ContratService implements IContratService {
         {
             contratDto.setTypeContrat(TypeContrat.CONTRAT_VENTE);
             contratDto.setMontant(appartementDto.getPrixVente());
-        } else if (appartementDto.getStatusAppartement().equals(StatusAppartement.LOUER)) {
+        } else if (appartementDto.getStatusAppartement().equals(StatusAppartement.LOUER))
+        {
             contratDto.setTypeContrat(TypeContrat.CONTRAT_LOUER);
             contratDto.setMontant(appartementDto.getPrixLocation());
         }

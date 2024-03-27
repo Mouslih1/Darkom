@@ -27,7 +27,8 @@ public class AgenceController {
     @PostMapping
     public ResponseEntity<AgenceResponse> save(
             @ModelAttribute @Valid AgenceRequest agenceRequest
-    ) {
+    )
+    {
         return new ResponseEntity<>(agenceService.save(agenceRequest), HttpStatus.CREATED);
     }
 
@@ -35,7 +36,8 @@ public class AgenceController {
     public ResponseEntity<AgenceResponse> update(
             @PathVariable Long agenceId,
             @ModelAttribute @Valid AgenceRequest agenceRequest
-    ){
+    )
+    {
         return new ResponseEntity<>(agenceService.update(agenceId, agenceRequest), HttpStatus.OK);
     }
 
@@ -43,7 +45,8 @@ public class AgenceController {
     public ResponseEntity<AgenceResponse> updateLogo(
             @PathVariable Long agenceId,
             @ModelAttribute @Valid AgenceLogoRequest agenceLogoRequest
-    ){
+    )
+    {
         return new ResponseEntity<>(agenceService.updateLogo(agenceId, agenceLogoRequest), HttpStatus.OK);
     }
 

@@ -1,7 +1,7 @@
-package com.example.agenceservice.client;
+package com.example.annonceservice.client;
 
-import com.example.agenceservice.dto.MediaDto;
-import com.example.agenceservice.entity.enums.MediaStatus;
+import com.example.annonceservice.dto.MediaDto;
+import com.example.annonceservice.entity.enums.MediaStatus;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -14,15 +14,17 @@ import java.util.List;
 public interface MediaClient {
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    ResponseEntity<List<MediaDto>> save(@RequestPart("files") List<MultipartFile> files,
-                                        @RequestParam("relatedId") Long relatedId,
-                                        @RequestParam("mediaStatus") MediaStatus mediaStatus
+    ResponseEntity<List<MediaDto>> save(
+            @RequestPart("files") List<MultipartFile> files,
+            @RequestParam("relatedId") Long relatedId,
+            @RequestParam("mediaStatus") MediaStatus mediaStatus
     );
 
     @PutMapping(path = "relatedId/{relatedId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    ResponseEntity<List<MediaDto>> update(@RequestPart("files") List<MultipartFile> files,
-                                                 @PathVariable Long relatedId,
-                                                 @RequestParam("mediaStatus") MediaStatus mediaStatus
+    ResponseEntity<List<MediaDto>> update(
+            @RequestPart("files") List<MultipartFile> files,
+            @PathVariable Long relatedId,
+            @RequestParam("mediaStatus") MediaStatus mediaStatus
     );
 
     @DeleteMapping("/related/{relatedId}")

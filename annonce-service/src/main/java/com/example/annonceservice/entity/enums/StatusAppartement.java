@@ -4,5 +4,4 @@ public enum StatusAppartement {
 
     VENTE,
     LOUER,
-    VENTE_OR_LOUER
 }

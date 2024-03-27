@@ -16,14 +16,12 @@ public interface MediaClient {
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     ResponseEntity<List<MediaDto>> save(@RequestPart("files") List<MultipartFile> files,
-                                        @RequestParam("agentCreatedBy") String agentCreatedBy,
                                         @RequestParam("relatedId") Long relatedId,
                                         @RequestParam("mediaStatus") MediaStatus mediaStatus
     );
 
     @PutMapping(path = "relatedId/{relatedId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     ResponseEntity<List<MediaDto>> update(@RequestPart("files") List<MultipartFile> files,
-                                          @RequestParam("agentUpdatedBy") String agentUpdatedBy,
                                           @PathVariable Long relatedId,
                                           @RequestParam("mediaStatus") MediaStatus mediaStatus
     );

@@ -25,7 +25,6 @@ public class MediaController {
 
     @PostMapping
     public ResponseEntity<List<MediaDto>> save(@RequestParam("files") List<MultipartFile> files,
-                                              @RequestParam("agentCreatedBy") String agentCreatedBy,
                                               @RequestParam("relatedId") Long relatedId,
                                               @RequestParam("mediaStatus") MediaStatus mediaStatus
     ) throws IOException
@@ -33,7 +32,7 @@ public class MediaController {
         List<MediaDto> medias = new ArrayList<>();
         for (MultipartFile file : files)
         {
-            MediaDto media = mediaService.upload(file, agentCreatedBy,relatedId, mediaStatus);
+            MediaDto media = mediaService.upload(file,relatedId, mediaStatus);
             medias.add(media);
         }
         return new ResponseEntity<>(medias, HttpStatus.CREATED);
@@ -41,7 +40,6 @@ public class MediaController {
 
     @PutMapping("relatedId/{relatedId}")
     public ResponseEntity<List<MediaDto>> update(@RequestPart("files") List<MultipartFile> files,
-                                               @RequestParam("agentUpdatedBy") String agentUpdatedBy,
                                                @PathVariable Long relatedId,
                                                @RequestParam("mediaStatus") MediaStatus mediaStatus
     ) throws IOException
@@ -49,7 +47,7 @@ public class MediaController {
         List<MediaDto> medias = new ArrayList<>();
         for (MultipartFile file : files)
         {
-            MediaDto media = mediaService.update(file, agentUpdatedBy,relatedId, mediaStatus);
+            MediaDto media = mediaService.update(file,relatedId, mediaStatus);
             medias.add(media);
         }
         return new ResponseEntity<>(medias, HttpStatus.CREATED);

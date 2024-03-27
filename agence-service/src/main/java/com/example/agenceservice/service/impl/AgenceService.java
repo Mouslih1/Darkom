@@ -40,7 +40,7 @@ public class AgenceService implements IAgenceService {
         if(agenceRequest.getMultipartFiles() != null && !agenceRequest.getMultipartFiles().isEmpty())
         {
             List<MediaDto> mediaDto = mediaClient.save(agenceRequest.getMultipartFiles(),
-                    agence.getAgentCreatedBy(), agence.getId(), MediaStatus.LOGO_AGENCE).getBody();
+                    agence.getId(), MediaStatus.LOGO_AGENCE).getBody();
             agenceResponse.setMedias(mediaDto);
         }
         return agenceResponse;
@@ -74,7 +74,7 @@ public class AgenceService implements IAgenceService {
             System.out.println(agenceLogoRequest.getMultipartFiles());
             System.out.println(agenceLogoRequest.getAgentUpdatedBy());
             mediaDto = mediaClient.update(agenceLogoRequest.getMultipartFiles(),
-                    agenceLogoRequest.getAgentUpdatedBy(), agence.getId(), MediaStatus.LOGO_AGENCE).getBody();
+                     agence.getId(), MediaStatus.LOGO_AGENCE).getBody();
         }
 
         return new AgenceResponse(modelMapper.map(agence, AgenceDto.class), mediaDto);

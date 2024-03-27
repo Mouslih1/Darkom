@@ -30,7 +30,7 @@ public class UserController {
         return new ResponseEntity<>(userService.save(agenceId, userRequest), HttpStatus.CREATED);
     }
 
-    @PostMapping("/admin")
+    @PostMapping("/register/admin")
     public ResponseEntity<UserResponse> registerByAdmin(
             @RequestBody @Valid UserRequest userRequest
     )

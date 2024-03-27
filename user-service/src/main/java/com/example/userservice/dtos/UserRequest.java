@@ -28,7 +28,6 @@ public class UserRequest {
     private String lastname;
     @NotBlank
     private String address;
-    @NotBlank
     private String password;
     @NotBlank
     private String telephone;

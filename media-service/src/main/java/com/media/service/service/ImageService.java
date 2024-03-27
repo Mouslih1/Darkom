@@ -24,17 +24,16 @@ public class ImageService {
     private final ModelMapper modelMapper;
 
 
-    public MediaDto upload(MultipartFile file, String agentCreatedBy, Long relatedId, MediaStatus mediaStatus) throws IOException
+    public MediaDto upload(MultipartFile file, Long relatedId, MediaStatus mediaStatus) throws IOException
     {
-        MediaDto metadata = fileStorageService.store(file, agentCreatedBy, relatedId, mediaStatus);
+        MediaDto metadata = fileStorageService.store(file, relatedId, mediaStatus);
         Media media = mediaRepository.save(modelMapper.map(metadata, Media.class));
         return modelMapper.map(media, MediaDto.class);
     }
 
-    public MediaDto update(MultipartFile file, String agentUpdatedBy, Long relatedId, MediaStatus mediaStatus) throws IOException
+    public MediaDto update(MultipartFile file, Long relatedId, MediaStatus mediaStatus) throws IOException
     {
         System.out.println(file);
-        System.out.println(agentUpdatedBy);
 
         List<Media> medias = mediaRepository.findByRelatedIdAndMediaStatus(relatedId, mediaStatus);
         if(!medias.isEmpty())
@@ -46,7 +45,7 @@ public class ImageService {
         }
 
 
-        MediaDto metadata = fileStorageService.store(file, agentUpdatedBy, relatedId, mediaStatus);
+        MediaDto metadata = fileStorageService.store(file, relatedId, mediaStatus);
         Media media = mediaRepository.save(modelMapper.map(metadata, Media.class));
         return modelMapper.map(media, MediaDto.class);
     }

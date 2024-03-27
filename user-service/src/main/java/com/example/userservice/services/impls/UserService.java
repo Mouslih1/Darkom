@@ -36,7 +36,7 @@ public class UserService implements IUserService {
     {
         emailSenderService.sendEmail(
                 userRequest.getEmail(),
-                "Generate password for you and you can enter with him",
+                "Generate password.",
                 "This is your password : " + userRequest.getPassword()
         );
 
@@ -55,7 +55,7 @@ public class UserService implements IUserService {
         if(userRequest.getMultipartFiles() != null && !userRequest.getMultipartFiles().isEmpty())
         {
             userResponse.setMedias(mediaClient.save(userRequest.getMultipartFiles(),
-                    userRequest.getAgentCreatedBy(), user.getId(), MediaStatus.PHOTO_PROFIL).getBody());
+                    user.getId(), MediaStatus.PHOTO_PROFIL).getBody());
         }
 
         return userResponse;
@@ -113,7 +113,7 @@ public class UserService implements IUserService {
         if(userRequestLogo.getMultipartFiles() != null && !userRequestLogo.getMultipartFiles().isEmpty())
         {
             mediaDto = mediaClient.update(userRequestLogo.getMultipartFiles(),
-                    userRequestLogo.getAgentUpdatedBy(), user.getId(), MediaStatus.PHOTO_PROFIL).getBody();
+                     user.getId(), MediaStatus.PHOTO_PROFIL).getBody();
         }
 
         return new UserResponse(modelMapper.map(user, UserDto.class), mediaDto);
@@ -123,6 +123,7 @@ public class UserService implements IUserService {
     public void delete(Long id)
     {
         userRepository.deleteById(id);
+        mediaClient.deleteMediaByRelatedId(id, MediaStatus.PHOTO_PROFIL);
     }
 
     @Override
@@ -162,7 +163,7 @@ public class UserService implements IUserService {
         {
             emailSenderService.sendEmail(
                     user.getEmail(),
-                    "Take you new password for not forget it.",
+                    "Take you new password.",
                     "This is your new password : " + userPasswordDto.getNewPassword()
             );
 

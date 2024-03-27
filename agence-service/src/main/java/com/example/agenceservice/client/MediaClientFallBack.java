@@ -11,13 +11,14 @@ import java.util.List;
 
 @Component
 public class MediaClientFallBack implements MediaClient{
+
     @Override
-    public ResponseEntity<List<MediaDto>> save(List<MultipartFile> files, String agentCreatedBy, Long relatedId, MediaStatus mediaStatus) {
+    public ResponseEntity<List<MediaDto>> save(List<MultipartFile> files, Long relatedId, MediaStatus mediaStatus) {
         throw  new MediaClientException("Erreur in save media client methode");
     }
 
     @Override
-    public ResponseEntity<List<MediaDto>> update(List<MultipartFile> files, String agentUpdatedBy, Long relatedId, MediaStatus mediaStatus) {
+    public ResponseEntity<List<MediaDto>> update(List<MultipartFile> files, Long relatedId, MediaStatus mediaStatus) {
         throw  new MediaClientException("Erreur in update media client methode");
     }
 
