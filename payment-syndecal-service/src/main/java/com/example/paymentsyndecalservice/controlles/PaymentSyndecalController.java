@@ -18,9 +18,12 @@ public class PaymentSyndecalController {
     private final IPaymentSyndecalService iPaymentSyndecalService;
 
     @PostMapping
-    public ResponseEntity<PaymentSyndecalDto> save(@RequestBody PaymentSyndecalDto paymentSyndecalDto)
+    public ResponseEntity<PaymentSyndecalDto> save(
+            @RequestBody PaymentSyndecalDto paymentSyndecalDto,
+            @RequestHeader("agenceId") Long agenceId
+    )
     {
-        return new ResponseEntity<>(iPaymentSyndecalService.save(paymentSyndecalDto), HttpStatus.CREATED);
+        return new ResponseEntity<>(iPaymentSyndecalService.save(agenceId, paymentSyndecalDto), HttpStatus.CREATED);
     }
 
     @GetMapping
@@ -36,6 +39,25 @@ public class PaymentSyndecalController {
     public ResponseEntity<PaymentSyndecalDto> byId(@PathVariable Long id)
     {
         return new ResponseEntity<>(iPaymentSyndecalService.byId(id), HttpStatus.OK);
+    }
+
+    @GetMapping("/agence")
+    public ResponseEntity<List<PaymentSyndecalDto>> allByAgence(
+            @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
+            @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize,
+            @RequestHeader("agenceId") Long agenceId
+    )
+    {
+        return new ResponseEntity<>(iPaymentSyndecalService.allByAgence(agenceId,pageNo, pageSize), HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}/agence")
+    public ResponseEntity<PaymentSyndecalDto> byIdByAgence(
+            @PathVariable Long id,
+            @RequestHeader("agenceId") Long agenceId
+    )
+    {
+        return new ResponseEntity<>(iPaymentSyndecalService.byIdByAgence(id, agenceId), HttpStatus.OK);
     }
 
     @PutMapping("/{id}")

@@ -23,10 +23,12 @@ public class PaymentContratLoyerService implements IPaymentContratLoyerService {
     private final IPaymentContratLoyerRepository iPaymentContratLoyerRepository;
     private final ModelMapper modelMapper;
     private static final String PAYMENT_CONTRAT_LOYER_NOT_FOUND = "Payment contrat loyer not found with this id : ";
+    private static final String PAYMENT_CONTRAT_LOYER_OR_AGENCE_NOT_FOUND = "Payment or agence contrat loyer not found with this id : ";
 
     @Override
-    public PaymentContratLoyerDto save(PaymentContratLoyerDto paymentContratLoyerDto)
+    public PaymentContratLoyerDto save(Long agenceId, PaymentContratLoyerDto paymentContratLoyerDto)
     {
+        paymentContratLoyerDto.setAgenceId(agenceId);
         PaymentContratLoyer paymentContratLoyer = iPaymentContratLoyerRepository.save(modelMapper.map(paymentContratLoyerDto, PaymentContratLoyer.class));
         return modelMapper.map(paymentContratLoyer, PaymentContratLoyerDto.class);
     }
@@ -76,6 +78,31 @@ public class PaymentContratLoyerService implements IPaymentContratLoyerService {
         PaymentContratLoyer paymentContratLoyer = iPaymentContratLoyerRepository
                 .findById(id)
                 .orElseThrow(() -> new NotFoundException(PAYMENT_CONTRAT_LOYER_NOT_FOUND + id));
+        return modelMapper.map(paymentContratLoyer, PaymentContratLoyerDto.class);
+    }
+
+    @Override
+    public List<PaymentContratLoyerDto> allByAgence(Long agenceId, int pageNo, int pageSize)
+    {
+        int startIndex = (pageNo) * pageSize;
+        List<PaymentContratLoyer> paymentContratLoyers = iPaymentContratLoyerRepository.findByAgenceId(agenceId);
+
+        List<PaymentContratLoyer> paginatedPaymentsContractsLoyers = paymentContratLoyers.stream()
+                .skip(startIndex)
+                .limit(pageSize)
+                .toList();
+
+        return paginatedPaymentsContractsLoyers
+                .stream()
+                .map((paymentContratLoyer) -> modelMapper.map(paymentContratLoyer, PaymentContratLoyerDto.class))
+                .toList();
+    }
+
+    @Override
+    public PaymentContratLoyerDto byIdByAgence(Long paymentContratLoyerId, Long agenceId)
+    {
+        PaymentContratLoyer paymentContratLoyer = iPaymentContratLoyerRepository.findByIdAndAgenceId(paymentContratLoyerId, agenceId)
+                .orElseThrow(() -> new NotFoundException(PAYMENT_CONTRAT_LOYER_OR_AGENCE_NOT_FOUND + paymentContratLoyerId + "agence : " + agenceId));
         return modelMapper.map(paymentContratLoyer, PaymentContratLoyerDto.class);
     }
 }

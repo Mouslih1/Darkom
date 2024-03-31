@@ -1,6 +1,7 @@
 package com.example.paymentcontratservice.controllers;
 
 
+import com.example.paymentcontratservice.dtos.PaymentContratLoyerDto;
 import com.example.paymentcontratservice.dtos.PaymentContratVenteDto;
 import com.example.paymentcontratservice.exceptions.Error;
 import com.example.paymentcontratservice.services.IPaymentContratVenteService;
@@ -20,10 +21,11 @@ public class PaymentContratVenteController {
 
     @PostMapping
     public ResponseEntity<PaymentContratVenteDto> save(
-            @RequestBody PaymentContratVenteDto paymentContratVenteDto
+            @RequestBody PaymentContratVenteDto paymentContratVenteDto,
+            @RequestHeader("agenceId") Long agenceId
     )
     {
-        return new ResponseEntity<>(iPaymentContratVenteService.save(paymentContratVenteDto), HttpStatus.CREATED);
+        return new ResponseEntity<>(iPaymentContratVenteService.save(agenceId, paymentContratVenteDto), HttpStatus.CREATED);
     }
 
     @GetMapping
@@ -35,10 +37,29 @@ public class PaymentContratVenteController {
         return new ResponseEntity<>(iPaymentContratVenteService.all(pageNo,  pageSize), HttpStatus.OK);
     }
 
+    @GetMapping("/agence")
+    public ResponseEntity<List<PaymentContratVenteDto>> allByAgence(
+            @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
+            @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize,
+            @RequestHeader("agenceId") Long agenceId
+    )
+    {
+        return new ResponseEntity<>(iPaymentContratVenteService.allByAgence(agenceId, pageNo, pageSize), HttpStatus.OK);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<PaymentContratVenteDto> byId(@PathVariable Long id)
     {
         return new ResponseEntity<>(iPaymentContratVenteService.byId(id), HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}/agence")
+    public ResponseEntity<PaymentContratVenteDto> byIdByAgence(
+            @PathVariable Long id,
+            @RequestHeader("agenceId") Long agenceId
+    )
+    {
+        return new ResponseEntity<>(iPaymentContratVenteService.byIdByAgence(id, agenceId), HttpStatus.OK);
     }
 
     @PutMapping("/{id}")

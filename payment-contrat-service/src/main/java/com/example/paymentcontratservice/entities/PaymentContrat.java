@@ -29,6 +29,7 @@ public abstract class PaymentContrat {
     private StatusPaymentContrat statusPaymentContrat;
     private Long contratId;
     private double montantPaye;
+    private Long agenceId;
 
     @CreatedBy
     private String agentCreatedBy;

@@ -23,10 +23,13 @@ public class TravauxService implements ITravauxService {
     private final ModelMapper modelMapper;
     private final ITravauxRepository iTravauxRepository;
     private static final String TRAVAUX_NOT_FOUND = "Travaux not found with this id : ";
+    private static final String TRAVAUX_OR_AGENCE_NOT_FOUND = "Travaux or agence not found with this id : ";
+
 
     @Override
-    public TravauxDto save(TravauxDto travauxDto)
+    public TravauxDto save(Long agenceId, TravauxDto travauxDto)
     {
+        travauxDto.setAgenceId(agenceId);
         Travaux travaux = iTravauxRepository.save(modelMapper.map(travauxDto, Travaux.class));
         return modelMapper.map(travaux, TravauxDto.class);
     }
@@ -68,6 +71,31 @@ public class TravauxService implements ITravauxService {
     public TravauxDto byId(Long id)
     {
         Travaux travaux = iTravauxRepository.findById(id).orElseThrow(() -> new NotFoundException(TRAVAUX_NOT_FOUND + id));
+        return modelMapper.map(travaux, TravauxDto.class);
+    }
+
+    @Override
+    public List<TravauxDto> allByAgence(Long agenceId, int pageNo, int pageSize)
+    {
+        int startIndex = (pageNo) * pageSize;
+        List<Travaux> travauxes = iTravauxRepository.findByAgenceId(agenceId);
+
+        List<Travaux> paginatedTravauxs = travauxes.stream()
+                .skip(startIndex)
+                .limit(pageSize)
+                .toList();
+
+        return paginatedTravauxs
+                .stream()
+                .map((travaux) -> modelMapper.map(travaux, TravauxDto.class))
+                .toList();
+    }
+
+    @Override
+    public TravauxDto byIdByAgence(Long travauxId, Long agenceId)
+    {
+        Travaux travaux = iTravauxRepository.findByIdAndAgenceId(travauxId, agenceId)
+                .orElseThrow(() -> new NotFoundException(TRAVAUX_OR_AGENCE_NOT_FOUND + travauxId + "agence : " + agenceId));
         return modelMapper.map(travaux, TravauxDto.class);
     }
 }

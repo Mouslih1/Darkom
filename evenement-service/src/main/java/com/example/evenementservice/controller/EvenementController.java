@@ -19,9 +19,12 @@ public class EvenementController {
     private final IEvenementService iEvenementService;
 
     @PostMapping
-    public ResponseEntity<EvenementDto> save(@RequestBody @Valid EvenementDto evenementDto)
+    public ResponseEntity<EvenementDto> save(
+            @RequestBody @Valid EvenementDto evenementDto,
+            @RequestHeader("agenceId") Long agenceId
+    )
     {
-        return new ResponseEntity<>(iEvenementService.save(evenementDto), HttpStatus.CREATED);
+        return new ResponseEntity<>(iEvenementService.save(agenceId,evenementDto), HttpStatus.CREATED);
     }
 
     @GetMapping
@@ -31,6 +34,25 @@ public class EvenementController {
     )
     {
         return new ResponseEntity<>(iEvenementService.all(pageNo, pageSize), HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}/agence")
+    public ResponseEntity<EvenementDto> byIdByAgence(
+            @PathVariable Long id,
+            @RequestHeader("agenceId") Long agenceId
+    )
+    {
+        return new ResponseEntity<>(iEvenementService.byIdByAgence(id, agenceId), HttpStatus.OK);
+    }
+
+    @GetMapping("/agence")
+    public ResponseEntity<List<EvenementDto>> allByAgence(
+            @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
+            @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize,
+            @RequestHeader("agenceId") Long agenceId
+    )
+    {
+        return new ResponseEntity<>(iEvenementService.allByAgence(agenceId, pageNo, pageSize), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")

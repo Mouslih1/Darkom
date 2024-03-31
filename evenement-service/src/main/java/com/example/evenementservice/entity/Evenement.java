@@ -32,6 +32,8 @@ public class Evenement {
     private String description;
     private Date dateEvenement;
     private Long appartementId;
+    private Long agenceId;
+
 
     @CreatedBy
     private String propreitaireCreatedBy;

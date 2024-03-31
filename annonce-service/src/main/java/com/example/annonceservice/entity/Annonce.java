@@ -39,6 +39,7 @@ public class Annonce {
     private TypeAnnonce typeAnnonce;
     private double prixVente;
     private double prixLouer;
+    private Long agenceId;
     @CreatedBy
     private String agentCreatedBy;
     @LastModifiedBy

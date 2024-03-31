@@ -20,6 +20,7 @@ public class PaymentContratLoyerDto {
     private double montantPaye;
     private TypePaymentContratLoyer typePaymentContratLoyer;
     private MethodePaymentContratLoyer methodePaymentContratLoyer;
+    private Long agenceId;
 
     private String agentCreatedBy;
     private String agentUpdatedBy;

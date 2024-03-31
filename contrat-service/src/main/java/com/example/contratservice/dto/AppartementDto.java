@@ -22,6 +22,8 @@ public class AppartementDto {
     private StatusAppartement statusAppartement;
     private EtatAppartement etatAppartement = EtatAppartement.LIBRE;
     private Long immeubleId;
+    private Long agenceId;
+
     private String agentCreatedBy;
     private String agentUpdatedBy;
     private LocalDateTime createdAt;

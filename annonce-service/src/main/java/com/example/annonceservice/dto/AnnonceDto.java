@@ -24,6 +24,8 @@ public class AnnonceDto {
     private TypeAnnonce typeAnnonce;
     private double prixVente;
     private double prixLouer;
+    private Long agenceId;
+
     private String agentCreatedBy;
     private String agentUpdatedBy;
     private LocalDateTime createdAt;

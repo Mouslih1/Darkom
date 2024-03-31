@@ -19,9 +19,12 @@ public class ContratController {
     private final IContratService iContratService;
 
     @PostMapping
-    public ResponseEntity<ContratDto> save(@RequestBody @Valid ContratDto contratDto)
+    public ResponseEntity<ContratDto> save(
+            @RequestBody @Valid ContratDto contratDto,
+            @RequestHeader("agenceId") Long agenceId
+    )
     {
-        return new ResponseEntity<>(iContratService.save(contratDto), HttpStatus.CREATED);
+        return new ResponseEntity<>(iContratService.save(agenceId, contratDto), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
@@ -43,6 +46,25 @@ public class ContratController {
     public ResponseEntity<ContratDto> byId(@PathVariable Long id)
     {
         return new ResponseEntity<>(iContratService.byId(id), HttpStatus.OK);
+    }
+
+    @GetMapping("/agence")
+    public ResponseEntity<List<ContratDto>> allByAgence(
+            @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
+            @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize,
+            @RequestHeader("agenceId") Long agenceId
+    )
+    {
+        return new ResponseEntity<>(iContratService.allByAgence(agenceId, pageNo, pageSize), HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}/agence")
+    public ResponseEntity<ContratDto> byIdByAgence(
+            @PathVariable Long id,
+            @RequestHeader("agenceId") Long agenceId
+    )
+    {
+        return new ResponseEntity<>(iContratService.byIdAndAgence(id, agenceId), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")

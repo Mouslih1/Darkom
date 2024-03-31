@@ -21,10 +21,13 @@ public class EvenementService implements IEvenementService {
     private final IEvenementRepository iEvenementRepository;
     private final ModelMapper modelMapper;
     private static final String EVENEMENT_NOT_FOUND = "Evenement not found with this id : ";
+    private static final String EVENEMENT_OR_AGENCE_NOT_FOUND = "Evenement or agence not found with this id : ";
+
 
     @Override
-    public EvenementDto save(EvenementDto evenementDto)
+    public EvenementDto save(Long agenceId, EvenementDto evenementDto)
     {
+        evenementDto.setAgenceId(agenceId);
         Evenement evenement = iEvenementRepository.save(modelMapper.map(evenementDto, Evenement.class));
         return modelMapper.map(evenement, EvenementDto.class);
     }
@@ -64,6 +67,31 @@ public class EvenementService implements IEvenementService {
     public EvenementDto byId(Long id)
     {
         Evenement evenement = iEvenementRepository.findById(id).orElseThrow(() -> new NotFoundException(EVENEMENT_NOT_FOUND + id));
+        return modelMapper.map(evenement, EvenementDto.class);
+    }
+
+    @Override
+    public List<EvenementDto> allByAgence(Long agenceId, int pageNo, int pageSize)
+    {
+        int startIndex = (pageNo) * pageSize;
+        List<Evenement> evenements = iEvenementRepository.findByAgenceId(agenceId);
+
+        List<Evenement> paginatedEvenements = evenements.stream()
+                .skip(startIndex)
+                .limit(pageSize)
+                .toList();
+
+        return paginatedEvenements
+                .stream()
+                .map((evenement) -> modelMapper.map(evenement, EvenementDto.class))
+                .toList();
+    }
+
+    @Override
+    public EvenementDto byIdByAgence(Long id, Long agenceId)
+    {
+        Evenement evenement = iEvenementRepository.findByIdAndAgenceId(id, agenceId)
+                .orElseThrow(() -> new NotFoundException(EVENEMENT_OR_AGENCE_NOT_FOUND + id + "agence : " + agenceId));
         return modelMapper.map(evenement, EvenementDto.class);
     }
 }

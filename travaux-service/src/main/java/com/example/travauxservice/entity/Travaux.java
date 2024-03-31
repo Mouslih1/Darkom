@@ -37,6 +37,8 @@ public class Travaux {
     private Date dateFin;
     private double montant;
     private Long immeubleId;
+    private Long agenceId;
+
     @CreatedBy
     private String syndecCreatedBy;
     @LastModifiedBy

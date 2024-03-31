@@ -24,12 +24,14 @@ public class PaymentContratVenteService implements IPaymentContratVenteService {
     private final IPaymentContratVenteRepository iPaymentContratVenteRepository;
     private final ContratClient contratClient;
     private static final String PAYMENT_CONTRAT_VENTE_NOT_FOUND = "Payment contrat vente not found with this id : ";
+    private static final String PAYMENT_CONTRAT_VENTE_OR_AGENCE_NOT_FOUND = "Payment contrat vente or agence not found with this id : ";
 
     @Override
-    public PaymentContratVenteDto save(PaymentContratVenteDto paymentContratVenteDto)
+    public PaymentContratVenteDto save(Long agenceId, PaymentContratVenteDto paymentContratVenteDto)
     {
         ContratDto contratDto = contratClient.byId(paymentContratVenteDto.getContratId()).getBody();
         assert contratDto != null;
+        paymentContratVenteDto.setAgenceId(agenceId);
         paymentContratVenteDto.setMontantRester(contratDto.getMontant() - paymentContratVenteDto.getMontantPaye());
         PaymentContrat paymentContratSaved = iPaymentContratVenteRepository.save(modelMapper.map(paymentContratVenteDto, PaymentContratVente.class));
         return modelMapper.map(paymentContratSaved, PaymentContratVenteDto.class);
@@ -75,6 +77,31 @@ public class PaymentContratVenteService implements IPaymentContratVenteService {
     public PaymentContratVenteDto byId(Long id)
     {
         PaymentContratVente paymentContratVente = iPaymentContratVenteRepository.findById(id).orElseThrow(() -> new NotFoundException(PAYMENT_CONTRAT_VENTE_NOT_FOUND + id));
+        return modelMapper.map(paymentContratVente, PaymentContratVenteDto.class);
+    }
+
+    @Override
+    public List<PaymentContratVenteDto> allByAgence(Long agenceId, int pageNo, int pageSize)
+    {
+        int startIndex = (pageNo) * pageSize;
+        List<PaymentContratVente> paymentContratVentes = iPaymentContratVenteRepository.findByAgenceId(agenceId);
+
+        List<PaymentContratVente> paginatedPaymentsContractsVentes = paymentContratVentes.stream()
+                .skip(startIndex)
+                .limit(pageSize)
+                .toList();
+
+        return paginatedPaymentsContractsVentes
+                .stream()
+                .map((paymentContratVente) -> modelMapper.map(paymentContratVente, PaymentContratVenteDto.class))
+                .toList();
+    }
+
+    @Override
+    public PaymentContratVenteDto byIdByAgence(Long paymentContratVenteId, Long agenceId)
+    {
+        PaymentContratVente paymentContratVente = iPaymentContratVenteRepository.findByIdAndAgenceId(paymentContratVenteId, agenceId)
+                .orElseThrow(() -> new NotFoundException(PAYMENT_CONTRAT_VENTE_OR_AGENCE_NOT_FOUND + paymentContratVenteId + "agence : " + agenceId));
         return modelMapper.map(paymentContratVente, PaymentContratVenteDto.class);
     }
 }

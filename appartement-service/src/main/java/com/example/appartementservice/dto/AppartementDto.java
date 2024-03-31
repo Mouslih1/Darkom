@@ -35,6 +35,8 @@ public class AppartementDto {
     private EtatAppartement etatAppartement = EtatAppartement.LIBRE;
     @NotNull
     private Long immeubleId;
+    private Long agenceId;
+
     private String agentCreatedBy;
     private String agentUpdatedBy;
     private LocalDateTime createdAt;

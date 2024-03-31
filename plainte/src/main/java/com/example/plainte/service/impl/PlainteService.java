@@ -23,10 +23,13 @@ public class PlainteService implements IPlainteService {
     private final IPlainteRepository iPlainteRepository;
     private final ModelMapper modelMapper;
     private static final String PLAINTE_NOT_FOUND = "Plainte not found this id : ";
+    private static final String PLAINTE_OR_AGENCE_NOT_FOUND = "Plainte or agence not found this id : ";
+
 
     @Override
-    public PlainteDto save(PlainteDto plainteDto)
+    public PlainteDto save(Long agenceId, PlainteDto plainteDto)
     {
+        plainteDto.setAgenceId(agenceId);
         Plainte plainte = iPlainteRepository.save(modelMapper.map(plainteDto, Plainte.class));
         return modelMapper.map(plainte, PlainteDto.class);
     }
@@ -45,6 +48,31 @@ public class PlainteService implements IPlainteService {
         Page<Plainte> plaintes = iPlainteRepository.findAll(pageable);
 
         return plaintes
+                .stream()
+                .map((plainte) -> modelMapper.map(plainte, PlainteDto.class))
+                .toList();
+    }
+
+    @Override
+    public PlainteDto byIdByAgence(Long plainteId, Long agenceId)
+    {
+        Plainte plainte = iPlainteRepository.findByIdAndAgenceId(plainteId, agenceId)
+                .orElseThrow(() -> new NotFoundException(PLAINTE_OR_AGENCE_NOT_FOUND + plainteId + "agence : " + agenceId));
+        return modelMapper.map(plainte, PlainteDto.class);
+    }
+
+    @Override
+    public List<PlainteDto> allByAgence(Long agenceId, int pageNo, int pageSize)
+    {
+        int startIndex = (pageNo) * pageSize;
+        List<Plainte> plaintes = iPlainteRepository.findByAgenceId(agenceId);
+
+        List<Plainte> paginatedPlaintes = plaintes.stream()
+                .skip(startIndex)
+                .limit(pageSize)
+                .toList();
+
+        return paginatedPlaintes
                 .stream()
                 .map((plainte) -> modelMapper.map(plainte, PlainteDto.class))
                 .toList();

@@ -8,6 +8,9 @@ import com.example.paymentsyndecalservice.services.IPaymentSyndecalService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,10 +23,13 @@ public class PaymentSyndecalService implements IPaymentSyndecalService {
     private final ModelMapper modelMapper;
     private final IPaymentSyndecalRepository iPaymentSyndecalRepository;
     private static final String PAYMENT_SYNDECAL_NOT_FOUND = "Payment syndecal not found with this id : ";
+    private static final String PAYMENT_SYNDECAL_OR_AGENCE_NOT_FOUND = "Payment syndecal or agence not found with this id : ";
+
 
     @Override
-    public PaymentSyndecalDto save(PaymentSyndecalDto paymentSyndecalDto)
+    public PaymentSyndecalDto save(Long agenceId, PaymentSyndecalDto paymentSyndecalDto)
     {
+        paymentSyndecalDto.setAgenceId(agenceId);
         PaymentSyndecal paymentSyndecal = iPaymentSyndecalRepository.save(modelMapper.map(paymentSyndecalDto, PaymentSyndecal.class));
         return modelMapper.map(paymentSyndecal, PaymentSyndecalDto.class);
     }
@@ -52,7 +58,9 @@ public class PaymentSyndecalService implements IPaymentSyndecalService {
     @Override
     public List<PaymentSyndecalDto> all(int pageNo, int pageSize)
     {
-        List<PaymentSyndecal> paymentSyndecals = iPaymentSyndecalRepository.findAll();
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<PaymentSyndecal> paymentSyndecals = iPaymentSyndecalRepository.findAll(pageable);
+
         return paymentSyndecals
                 .stream()
                 .map((paymentSyndecal) -> modelMapper.map(paymentSyndecal, PaymentSyndecalDto.class))
@@ -63,6 +71,31 @@ public class PaymentSyndecalService implements IPaymentSyndecalService {
     public PaymentSyndecalDto byId(Long id)
     {
         PaymentSyndecal paymentSyndecal = iPaymentSyndecalRepository.findById(id).orElseThrow(() -> new NotFoundException(PAYMENT_SYNDECAL_NOT_FOUND + id));
+        return modelMapper.map(paymentSyndecal, PaymentSyndecalDto.class);
+    }
+
+    @Override
+    public List<PaymentSyndecalDto> allByAgence(Long agenceId, int pageNo, int pageSize)
+    {
+        int startIndex = (pageNo) * pageSize;
+        List<PaymentSyndecal> paymentSyndecates = iPaymentSyndecalRepository.findByAgenceId(agenceId);
+
+        List<PaymentSyndecal> paginatedPaymentSyndecates = paymentSyndecates.stream()
+                .skip(startIndex)
+                .limit(pageSize)
+                .toList();
+
+        return paginatedPaymentSyndecates
+                .stream()
+                .map((paymentSyndecal) -> modelMapper.map(paymentSyndecal, PaymentSyndecalDto.class))
+                .toList();
+    }
+
+    @Override
+    public PaymentSyndecalDto byIdByAgence(Long paymentSyndecalId, Long agenceId)
+    {
+        PaymentSyndecal paymentSyndecal = iPaymentSyndecalRepository.findByIdAndAgenceId(paymentSyndecalId, agenceId)
+                .orElseThrow(() -> new NotFoundException(PAYMENT_SYNDECAL_OR_AGENCE_NOT_FOUND + paymentSyndecalId + "agence : " + agenceId));
         return modelMapper.map(paymentSyndecal, PaymentSyndecalDto.class);
     }
 }

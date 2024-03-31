@@ -23,6 +23,8 @@ public class EvenementDto {
     private Date dateEvenement;
     @NotNull
     private Long appartementId;
+    private Long agenceId;
+
     private String propreitaireCreatedBy;
     private String propreitaireUpdatedBy;
     private LocalDateTime createdAt;

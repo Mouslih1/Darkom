@@ -18,9 +18,12 @@ public class PlainteController {
     private final IPlainteService iPlainteService;
 
     @PostMapping
-    public ResponseEntity<PlainteDto> save(@RequestBody PlainteDto plainteDto)
+    public ResponseEntity<PlainteDto> save(
+            @RequestBody PlainteDto plainteDto,
+            @RequestHeader("agenceId") Long agenceId
+    )
     {
-        return new ResponseEntity<>(iPlainteService.save(plainteDto), HttpStatus.CREATED);
+        return new ResponseEntity<>(iPlainteService.save(agenceId, plainteDto), HttpStatus.CREATED);
     }
 
     @GetMapping
@@ -36,6 +39,25 @@ public class PlainteController {
     public ResponseEntity<PlainteDto> byId(@PathVariable Long id)
     {
         return new ResponseEntity<>(iPlainteService.byId(id), HttpStatus.OK);
+    }
+
+    @GetMapping("/agence")
+    public ResponseEntity<List<PlainteDto>> allByAgence(
+            @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
+            @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize,
+            @RequestHeader("agenceId") Long agenceId
+    )
+    {
+        return new ResponseEntity<>(iPlainteService.allByAgence(agenceId, pageNo, pageSize), HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}/agence")
+    public ResponseEntity<PlainteDto> byIdByAgence(
+            @PathVariable Long id,
+            @RequestHeader("agenceId") Long agenceId
+    )
+    {
+        return new ResponseEntity<>(iPlainteService.byIdByAgence(id, agenceId), HttpStatus.OK);
     }
 
     @PutMapping("/{id}")

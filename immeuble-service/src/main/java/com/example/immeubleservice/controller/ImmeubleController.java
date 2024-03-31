@@ -22,7 +22,10 @@ public class ImmeubleController {
     private final IimmeubleService iimmeubleService;
 
     @PostMapping
-    public ResponseEntity<ImmeubleDto> save(@RequestHeader("agenceId") Long agenceId,@RequestBody @Valid ImmeubleDto immeubleDto)
+    public ResponseEntity<ImmeubleDto> save(
+            @RequestHeader("agenceId") Long agenceId,
+            @RequestBody @Valid ImmeubleDto immeubleDto
+    )
     {
         return new ResponseEntity<>(iimmeubleService.save(agenceId,immeubleDto), HttpStatus.CREATED);
     }
@@ -57,6 +60,25 @@ public class ImmeubleController {
     )
     {
         return new ResponseEntity<>(iimmeubleService.all(pageNo, pageSize), HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}/agence")
+    public ResponseEntity<ImmeubleDto> byIdByAgence(
+            @PathVariable Long id,
+            @RequestHeader("agenceId") Long agenceId
+    )
+    {
+        return new ResponseEntity<>(iimmeubleService.byIdAndAgence(id, agenceId), HttpStatus.OK);
+    }
+
+    @GetMapping("/agence")
+    public ResponseEntity<List<ImmeubleDto>> allByAgence(
+            @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
+            @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize,
+            @RequestHeader("agenceId") Long agenceId
+    )
+    {
+        return new ResponseEntity<>(iimmeubleService.allByAgence(agenceId, pageNo, pageSize), HttpStatus.OK);
     }
 
     @PutMapping("/status/{id}")

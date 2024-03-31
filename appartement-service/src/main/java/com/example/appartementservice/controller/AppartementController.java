@@ -19,9 +19,12 @@ public class AppartementController {
     private final IAppartementService iAppartementService;
 
     @PostMapping
-    public ResponseEntity<AppartementDto> save(@RequestBody @Valid AppartementDto appartementDto)
+    public ResponseEntity<AppartementDto> save(
+            @RequestBody @Valid AppartementDto appartementDto,
+            @RequestHeader("agenceId") Long agenceId
+    )
     {
-        return new ResponseEntity<>(iAppartementService.save(appartementDto), HttpStatus.CREATED);
+        return new ResponseEntity<>(iAppartementService.save(agenceId, appartementDto), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
@@ -48,6 +51,25 @@ public class AppartementController {
     )
     {
         return new ResponseEntity<>(iAppartementService.all(pageNo, pageSize), HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}/agence")
+    public ResponseEntity<AppartementDto> byIdAndAgence(
+            @PathVariable Long id,
+            @RequestHeader("agenceId") Long agenceId
+    )
+    {
+        return new ResponseEntity<>(iAppartementService.byIdAndAgence(id, agenceId), HttpStatus.OK);
+    }
+
+    @GetMapping("/agence")
+    public ResponseEntity<List<AppartementDto>> allByAgence(
+            @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
+            @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize,
+            @RequestHeader("agenceId") Long agenceId
+    )
+    {
+        return new ResponseEntity<>(iAppartementService.allByAgence(agenceId,pageNo, pageSize), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")

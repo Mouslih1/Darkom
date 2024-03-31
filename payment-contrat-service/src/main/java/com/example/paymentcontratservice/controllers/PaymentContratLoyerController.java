@@ -19,10 +19,11 @@ public class PaymentContratLoyerController {
 
     @PostMapping
     public ResponseEntity<PaymentContratLoyerDto> save(
-            @RequestBody PaymentContratLoyerDto paymentContratLoyerDto
+            @RequestBody PaymentContratLoyerDto paymentContratLoyerDto,
+            @RequestHeader("agenceId") Long agenceId
     )
     {
-        return new ResponseEntity<>(iPaymentContratLoyerService.save(paymentContratLoyerDto), HttpStatus.CREATED);
+        return new ResponseEntity<>(iPaymentContratLoyerService.save(agenceId, paymentContratLoyerDto), HttpStatus.CREATED);
     }
 
     @GetMapping
@@ -32,6 +33,16 @@ public class PaymentContratLoyerController {
     )
     {
         return new ResponseEntity<>(iPaymentContratLoyerService.all(pageNo, pageSize), HttpStatus.OK);
+    }
+
+    @GetMapping("/agence")
+    public ResponseEntity<List<PaymentContratLoyerDto>> allByAgence(
+            @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
+            @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize,
+            @RequestHeader("agenceId") Long agenceId
+    )
+    {
+        return new ResponseEntity<>(iPaymentContratLoyerService.allByAgence(agenceId, pageNo, pageSize), HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
@@ -54,5 +65,14 @@ public class PaymentContratLoyerController {
     public ResponseEntity<PaymentContratLoyerDto> byId(@PathVariable Long id)
     {
         return new ResponseEntity<>(iPaymentContratLoyerService.byId(id), HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}/agence")
+    public ResponseEntity<PaymentContratLoyerDto> byIdByAgence(
+            @PathVariable Long id,
+            @RequestHeader("agenceId") Long agenceId
+    )
+    {
+        return new ResponseEntity<>(iPaymentContratLoyerService.byIdByAgence(id, agenceId), HttpStatus.OK);
     }
 }

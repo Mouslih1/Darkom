@@ -24,6 +24,7 @@ public class ContratDto {
     @NotNull
     private Long propreitaireId;
     private double montant;
+    private Long agenceId;
 
     private String agentCreatedBy;
     private String agentUpdatedBy;

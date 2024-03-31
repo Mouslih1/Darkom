@@ -71,4 +71,10 @@ public class AgenceController {
         agenceService.delete(agenceId);
         return new ResponseEntity<>(error, HttpStatus.OK);
     }
+
+    @GetMapping("/agence")
+    public ResponseEntity<AgenceResponse> agence(@RequestHeader("agenceId") Long agenceId)
+    {
+        return new ResponseEntity<>(agenceService.byId(agenceId), HttpStatus.OK);
+    }
 }

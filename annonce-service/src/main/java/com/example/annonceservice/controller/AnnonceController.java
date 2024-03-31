@@ -1,6 +1,5 @@
 package com.example.annonceservice.controller;
 
-import com.example.annonceservice.dto.AnnonceDto;
 import com.example.annonceservice.dto.AnnonceRequest;
 import com.example.annonceservice.dto.AnnonceRequestPhoto;
 import com.example.annonceservice.dto.AnnonceResponse;
@@ -22,9 +21,11 @@ public class AnnonceController {
     private final IAnnonceService iAnnonceService;
 
     @PostMapping
-    public ResponseEntity<AnnonceResponse> save(@ModelAttribute @Valid AnnonceRequest annonceRequest)
+    public ResponseEntity<AnnonceResponse> save(
+            @RequestHeader("agenceId") Long agenceId,
+            @ModelAttribute @Valid AnnonceRequest annonceRequest)
     {
-        return new ResponseEntity<>(iAnnonceService.save(annonceRequest), HttpStatus.CREATED);
+        return new ResponseEntity<>(iAnnonceService.save(agenceId, annonceRequest), HttpStatus.CREATED);
     }
 
     @GetMapping
@@ -34,6 +35,28 @@ public class AnnonceController {
     )
     {
         return new ResponseEntity<>(iAnnonceService.all(pageNo, pageSize), HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}/agence")
+    public ResponseEntity<AnnonceResponse> byIdAndAgence(
+            @PathVariable Long id,
+            @RequestHeader("agenceId") Long agenceId
+    )
+    {
+        return new ResponseEntity<>(iAnnonceService.byIdAndAgence(id, agenceId), HttpStatus.OK);
+    }
+
+    @GetMapping("/agence")
+    public ResponseEntity<List<AnnonceResponse>> allByAgence(
+            @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
+            @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize,
+            @RequestHeader("agenceId") Long agenceId
+    )
+    {
+        return new ResponseEntity<>(
+                iAnnonceService.allByAgence(pageNo, pageSize, agenceId),
+                HttpStatus.OK
+        );
     }
 
     @GetMapping("/{id}")

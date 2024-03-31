@@ -4,7 +4,9 @@ import com.example.userservice.clients.MediaClient;
 import com.example.userservice.dtos.*;
 import com.example.userservice.entities.User;
 import com.example.userservice.entities.enums.MediaStatus;
+import com.example.userservice.entities.enums.Role;
 import com.example.userservice.exceptions.NotFoundException;
+import com.example.userservice.exceptions.ValidationException;
 import com.example.userservice.repositories.IUserRepository;
 import com.example.userservice.services.IUserService;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -95,18 +98,43 @@ public class UserService implements IUserService {
         User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException(USER_NOT_FOUND + id));
         user.setAddress(userRequest.getAddress());
         user.setEmail(userRequest.getEmail());
+
+        if(userRequest.getRole().equals(Role.ADMIN))
+        {
+            throw new ValidationException("You can't add user in Admin state !");
+        }else{
+            user.setRole(userRequest.getRole());
+        }
+
+        user.setFirstname(userRequest.getFirstname());
+        user.setLastname(userRequest.getLastname());
+        user.setDateNaissance(userRequest.getDateNaissance());
+        user.setTelephone(userRequest.getTelephone());
+        user.setUsername(userRequest.getUsername());
+
+        User userUpdated = userRepository.save(user);
+        List<MediaDto> mediaDto = mediaClient.getMediaByRelatedId(userUpdated.getId(), MediaStatus.PHOTO_PROFIL).getBody();
+        return new UserResponse(modelMapper.map(userUpdated, UserDto.class), mediaDto);
+    }
+
+    @Override
+    public UserResponse updateByAdmin(Long id, UserRequest userRequest)
+    {
+        User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException(USER_NOT_FOUND + id));
+
+        user.setAddress(userRequest.getAddress());
+        user.setEmail(userRequest.getEmail());
         user.setRole(userRequest.getRole());
         user.setFirstname(userRequest.getFirstname());
         user.setLastname(userRequest.getLastname());
         user.setDateNaissance(userRequest.getDateNaissance());
         user.setTelephone(userRequest.getTelephone());
         user.setUsername(userRequest.getUsername());
-        user.setAgentUpdatedBy(userRequest.getAgentUpdatedBy());
+        user.setAgenceId(userRequest.getAgenceId());
 
         User userUpdated = userRepository.save(user);
         List<MediaDto> mediaDto = mediaClient.getMediaByRelatedId(userUpdated.getId(), MediaStatus.PHOTO_PROFIL).getBody();
-        return new UserResponse(modelMapper.map(userUpdated, UserDto.class), mediaDto);
-    }
+        return new UserResponse(modelMapper.map(userUpdated, UserDto.class), mediaDto);    }
 
     @Override
     public UserResponse updatePhotoProfil(Long id, UserRequestLogo userRequestLogo)
@@ -131,10 +159,17 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public List<UserResponse> allByAgence(Long agenceId)
+    public List<UserResponse> allByAgence(Long agenceId, int pageNo, int pageSize)
     {
+        int startIndex = (pageNo) * pageSize;
         List<User> users = userRepository.findByAgenceId(agenceId);
-        return users
+
+        List<User> paginatedUsers = users.stream()
+                .skip(startIndex)
+                .limit(pageSize)
+                .toList();
+
+        return paginatedUsers
                 .stream()
                 .map((user) -> {
                     UserDto userDto = modelMapper.map(user, UserDto.class);
@@ -147,7 +182,8 @@ public class UserService implements IUserService {
     @Override
     public UserResponse byIdAndAgence(Long userId, Long agenceId)
     {
-        User user = userRepository.findByIdAndAgenceId(userId, agenceId).orElseThrow(() -> new NotFoundException(USER_OR_AGENCE_NOT_FOUND + userId + "agence : " + agenceId));
+        User user = userRepository.findByIdAndAgenceId(userId, agenceId)
+                .orElseThrow(() -> new NotFoundException(USER_OR_AGENCE_NOT_FOUND + userId + "agence : " + agenceId));
         List<MediaDto> medias = mediaClient.getMediaByRelatedId(user.getId(), MediaStatus.PHOTO_PROFIL).getBody();
         return new UserResponse(modelMapper.map(user, UserDto.class), medias);
     }
@@ -155,6 +191,13 @@ public class UserService implements IUserService {
     @Override
     public UserResponse saveByAdmin(UserRequest userRequest)
     {
+        emailSenderService.sendEmail(
+                userRequest.getEmail(),
+                "Generate password.",
+                "This is your password : " + userRequest.getPassword()
+        );
+
+        userRequest.setPassword(passwordEncoder.encode(userRequest.getPassword()));
         return saveUserAndMedia(userRequest);
     }
 

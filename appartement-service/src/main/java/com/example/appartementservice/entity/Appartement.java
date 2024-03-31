@@ -39,7 +39,8 @@ public class Appartement {
     @Enumerated(value = EnumType.STRING)
     private EtatAppartement etatAppartement;
     private Long immeubleId;
-    private Long proprietaireId;
+    private Long agenceId;
+
     @CreatedBy
     private String agentCreatedBy;
     @LastModifiedBy

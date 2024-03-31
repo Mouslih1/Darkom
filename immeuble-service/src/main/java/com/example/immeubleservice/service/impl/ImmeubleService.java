@@ -26,10 +26,13 @@ public class ImmeubleService implements IimmeubleService {
     private final ModelMapper modelMapper;
     private  final IimeubleRepository iimeubleRepository;
     private static final String IMMEUBLE_NOT_FOUND = "Immeuble not found with this id : ";
+    private static final String IMMEUBLE_OR_AGENCE_NOT_FOUND = "Immeuble or agence not found with this id : ";
+
 
     @Override
     public ImmeubleDto save(Long agenceId, ImmeubleDto immeubleDto)
     {
+        immeubleDto.setAgenceId(agenceId);
         Immeuble immeuble = iimeubleRepository.save(modelMapper.map(immeubleDto, Immeuble.class));
         return modelMapper.map(immeuble, ImmeubleDto.class);
     }
@@ -65,6 +68,31 @@ public class ImmeubleService implements IimmeubleService {
     public ImmeubleDto byId(Long id)
     {
         Immeuble immeuble = iimeubleRepository.findById(id).orElseThrow(() -> new NotFoundException(IMMEUBLE_NOT_FOUND + id));
+        return modelMapper.map(immeuble, ImmeubleDto.class);
+    }
+
+    @Override
+    public List<ImmeubleDto> allByAgence(Long agenceId, int pageNo, int pageSize)
+    {
+        int startIndex = (pageNo) * pageSize;
+        List<Immeuble> immeubles = iimeubleRepository.findByAgenceId(agenceId);
+
+        List<Immeuble> paginatedImmeubles = immeubles.stream()
+                .skip(startIndex)
+                .limit(pageSize)
+                .toList();
+
+        return paginatedImmeubles
+                .stream()
+                .map((immeuble) -> modelMapper.map(immeuble, ImmeubleDto.class))
+                .toList();
+    }
+
+    @Override
+    public ImmeubleDto byIdAndAgence(Long id, Long agenceId)
+    {
+        Immeuble immeuble = iimeubleRepository.findByIdAndAgenceId(id, agenceId)
+                .orElseThrow(() -> new NotFoundException(IMMEUBLE_OR_AGENCE_NOT_FOUND + id + "agence : " + agenceId));
         return modelMapper.map(immeuble, ImmeubleDto.class);
     }
 

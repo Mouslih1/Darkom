@@ -1,6 +1,8 @@
 package com.example.userservice.exceptions.advice;
 
+import com.example.userservice.exceptions.Error;
 import com.example.userservice.exceptions.NotFoundException;
+import com.example.userservice.exceptions.ValidationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -20,6 +22,14 @@ public class ApplicationExceptionHandler {
     {
         Error error = new Error(exception.getMessage());
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(ValidationException.class)
+    public ResponseEntity<Error> hanldeBusinessException(ValidationException exception)
+    {
+        Error error = new Error(exception.getMessage());
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

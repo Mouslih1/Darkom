@@ -36,6 +36,7 @@ public class Plainte {
     private StatusPlainte statusPlainte;
     @Enumerated(EnumType.STRING)
     private Urgence urgence;
+    private Long agenceId;
 
     @CreatedBy
     private String propreitaireCreatedBy;

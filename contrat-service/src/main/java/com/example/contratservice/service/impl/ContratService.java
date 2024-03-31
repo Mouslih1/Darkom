@@ -32,9 +32,11 @@ public class ContratService implements IContratService {
     private final AppartementClient appartementClient;
     private final ImmeubleClient immeubleClient;
     private static final String CONTRAT_NOT_FOUND = "Contrat not found with this id : ";
+    private static final String CONTRAT_OR_AGENCE_NOT_FOUND = "Contrat OR agence not found with this id : ";
+
 
     @Override
-    public ContratDto save(ContratDto contratDto)
+    public ContratDto save(Long agenceId,ContratDto contratDto)
     {
         AppartementDto appartementDto = appartementClient.byId(contratDto.getAppartementId()).getBody();
         assert appartementDto != null;
@@ -42,6 +44,7 @@ public class ContratService implements IContratService {
         ImmeubleDto immeubleDto = immeubleClient.byId(appartementDto.getImmeubleId()).getBody();
         assert immeubleDto != null;
 
+        contratDto.setAgenceId(agenceId);
         appartementClient.updateEtatAppartementToOccuper(appartementDto.getId());
 
         getTypeOfContratAndMontantOfContrat(appartementDto, contratDto);
@@ -128,6 +131,31 @@ public class ContratService implements IContratService {
         Page<Contrat> contrats = iContratRepository.findAll(pageable);
 
         return contrats
+                .stream()
+                .map((contrat) -> modelMapper.map(contrat, ContratDto.class))
+                .toList();
+    }
+
+    @Override
+    public ContratDto byIdAndAgence(Long contratId, Long agenceId)
+    {
+        Contrat contrat = iContratRepository.findByIdAndAgenceId(contratId, agenceId)
+                .orElseThrow(() -> new NotFoundException(CONTRAT_OR_AGENCE_NOT_FOUND + contratId + "agence : " + agenceId));
+        return modelMapper.map(contrat, ContratDto.class);
+    }
+
+    @Override
+    public List<ContratDto> allByAgence(Long agenceId, int pageNo, int pageSize)
+    {
+        int startIndex = (pageNo) * pageSize;
+        List<Contrat> contrats = iContratRepository.findByAgenceId(agenceId);
+
+        List<Contrat> paginatedContrats = contrats.stream()
+                .skip(startIndex)
+                .limit(pageSize)
+                .toList();
+
+        return paginatedContrats
                 .stream()
                 .map((contrat) -> modelMapper.map(contrat, ContratDto.class))
                 .toList();

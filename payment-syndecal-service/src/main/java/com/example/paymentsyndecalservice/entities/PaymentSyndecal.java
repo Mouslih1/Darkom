@@ -39,6 +39,8 @@ public class PaymentSyndecal {
     private MethodePaymentSyndecal methodePaymentSyndecal;
     @Enumerated(EnumType.STRING)
     private StatusPaymentSyndecal statusPaymentSyndecal;
+    private Long agenceId;
+
     @CreatedBy
     private String agentCreatedBy;
     @LastModifiedBy

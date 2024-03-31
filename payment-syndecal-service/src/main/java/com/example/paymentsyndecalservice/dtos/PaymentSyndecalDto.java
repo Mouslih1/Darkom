@@ -20,8 +20,12 @@ public class PaymentSyndecalDto {
     private TypePaymentSyndecal typePaymentSyndecal;
     private MethodePaymentSyndecal methodePaymentSyndecal;
     private StatusPaymentSyndecal statusPaymentSyndecal;
-    private String propreitaireCreatedBy;
-    private String propreitaireUpdatedBy;
+    private Long agenceId;
+
+    private String agentCreatedBy;
+
+    private String agentUpdatedBy;
+
     private LocalDateTime createdAt;
     private LocalDateTime updateAt;
 }

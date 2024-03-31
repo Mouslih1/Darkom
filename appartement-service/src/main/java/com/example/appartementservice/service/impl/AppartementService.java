@@ -31,12 +31,14 @@ public class AppartementService implements IAppartementService {
     private final IAppartementRepository iAppartementRepository;
     private final ImmeubleClient immeubleClient;
     private final static  String APPARTEMENT_NOT_FOUND = "Appartement not found with this id : ";
+    private final static  String APPARTEMENT_OR_AGENCE_NOT_FOUND = "Appartement or agence not found with this id : ";
+
 
     @Override
-    public AppartementDto save(AppartementDto appartementDto)
+    public AppartementDto save(Long agenceId, AppartementDto appartementDto)
     {
         validation(appartementDto.getImmeubleId());
-
+        appartementDto.setAgenceId(agenceId);
         Appartement appartementSaved = iAppartementRepository.save(modelMapper.map(appartementDto, Appartement.class));
 
         updateStatusImmeuble(appartementSaved.getImmeubleId());
@@ -136,9 +138,34 @@ public class AppartementService implements IAppartementService {
     }
 
     @Override
+    public List<AppartementDto> allByAgence(Long agenceId, int pageNo, int pageSize)
+    {
+        int startIndex = (pageNo) * pageSize;
+        List<Appartement> appartements = iAppartementRepository.findByAgenceId(agenceId);
+
+        List<Appartement> paginatedAppartements = appartements.stream()
+                .skip(startIndex)
+                .limit(pageSize)
+                .toList();
+
+        return paginatedAppartements
+                .stream()
+                .map((appartement) -> modelMapper.map(appartement, AppartementDto.class))
+                .toList();
+    }
+
+    @Override
     public AppartementDto byId(Long id)
     {
         Appartement appartement = iAppartementRepository.findById(id).orElseThrow(() -> new NotFoundException(APPARTEMENT_NOT_FOUND + id));
+        return modelMapper.map(appartement, AppartementDto.class);
+    }
+
+    @Override
+    public AppartementDto byIdAndAgence(Long id, Long agenceId)
+    {
+        Appartement appartement = iAppartementRepository.findByIdAndAgenceId(id, agenceId)
+                .orElseThrow(() -> new NotFoundException(APPARTEMENT_OR_AGENCE_NOT_FOUND + id + "agence : " + agenceId));
         return modelMapper.map(appartement, AppartementDto.class);
     }
 

@@ -22,7 +22,8 @@ public class AppartementDto {
     private StatusAppartement statusAppartement;
     private EtatAppartement etatAppartement;
     private Long immeubleId;
-    private Long proprietaireId;
+    private Long agenceId;
+
     private String agentCreatedBy;
     private String agentUpdatedBy;
     private LocalDateTime createdAt;

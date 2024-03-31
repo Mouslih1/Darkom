@@ -29,11 +29,13 @@ public class AnnonceService implements IAnnonceService {
     private final AppartementClient appartementClient;
     private final MediaClient mediaClient;
     private static final String ANNONCE_NOT_FOUND = "Annonce not found this id : ";
+    private static final String ANNONCE_OR_AGENCE_NOT_FOUND = "Annonce not found this id : ";
 
     @Override
-    public AnnonceResponse save(AnnonceRequest annonceRequest)
+    public AnnonceResponse save(Long agenceId, AnnonceRequest annonceRequest)
     {
         getTypeAnnonceAndPrixByStatusAppartement(annonceRequest);
+        annonceRequest.setAgenceId(agenceId);
         Annonce annonce = iAnnonceRepository.save(modelMapper.map(annonceRequest, Annonce.class));
         AnnonceResponse annonceResponse = new AnnonceResponse();
         annonceResponse.setAnnonceDto(modelMapper.map(annonce, AnnonceDto.class));
@@ -71,12 +73,42 @@ public class AnnonceService implements IAnnonceService {
     }
 
     @Override
+    public AnnonceResponse byIdAndAgence(Long annonceId, Long agenceId)
+    {
+        Annonce annonce = iAnnonceRepository.findByIdAndAgenceId(annonceId, agenceId)
+                .orElseThrow(() -> new NotFoundException(ANNONCE_OR_AGENCE_NOT_FOUND + annonceId + "agence : " + agenceId));
+        List<MediaDto> medias = mediaClient.getMediaByRelatedId(annonce.getId(), MediaStatus.PHOTO_PROFIL).getBody();
+        return new AnnonceResponse(modelMapper.map(annonce, AnnonceDto.class), medias);
+    }
+
+    @Override
     public List<AnnonceResponse> all(int pageNo, int pageSize)
     {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<Annonce> annonces = iAnnonceRepository.findAll(pageable);
 
         return annonces
+                .stream()
+                .map((annonce) -> {
+                    AnnonceDto annonceDto = modelMapper.map(annonce, AnnonceDto.class);
+                    List<MediaDto> medias = mediaClient.getMediaByRelatedId(annonceDto.getId(), MediaStatus.ANNONCE_PHOTO).getBody();
+                    return new AnnonceResponse(annonceDto, medias);
+                })
+                .toList();
+    }
+
+    @Override
+    public List<AnnonceResponse> allByAgence(int pageNo, int pageSize, Long agenceId)
+    {
+        int startIndex = (pageNo) * pageSize;
+        List<Annonce> annonces = iAnnonceRepository.findByAgenceId(agenceId);
+
+        List<Annonce> paginatedAnnonces = annonces.stream()
+                .skip(startIndex)
+                .limit(pageSize)
+                .toList();
+
+        return paginatedAnnonces
                 .stream()
                 .map((annonce) -> {
                     AnnonceDto annonceDto = modelMapper.map(annonce, AnnonceDto.class);

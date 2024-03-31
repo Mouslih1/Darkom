@@ -28,6 +28,8 @@ public class TravauxDto {
     private double montant;
     @NotNull
     private Long immeubleId;
+    private Long agenceId;
+
     private String syndecCreatedBy;
     private String syndecUpdatedBy;
     private LocalDateTime createdAt;

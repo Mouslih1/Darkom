@@ -17,6 +17,6 @@ public class ApplicationAuditAware implements AuditorAware<String> {
     public Optional<String> getCurrentAuditor()
     {
         String username = request.getHeader("username");
-        return Optional.of(username);
+        return Optional.ofNullable(username);
     }
 }

@@ -34,6 +34,7 @@ public class Contrat {
     private Long appartementId;
     private Long propreitaireId;
     private double montant;
+    private Long agenceId;
 
     @CreatedBy
     private String agentCreatedBy;

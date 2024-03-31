@@ -27,12 +27,13 @@ public class UserController {
             @ModelAttribute @Valid UserRequest userRequest
     )
     {
+        System.out.println();
         return new ResponseEntity<>(userService.save(agenceId, userRequest), HttpStatus.CREATED);
     }
 
     @PostMapping("/register/admin")
     public ResponseEntity<UserResponse> registerByAdmin(
-            @RequestBody @Valid UserRequest userRequest
+            @ModelAttribute @Valid UserRequest userRequest
     )
     {
         return new ResponseEntity<>(userService.saveByAdmin(userRequest), HttpStatus.CREATED);
@@ -47,6 +48,8 @@ public class UserController {
         return new ResponseEntity<>( userService.all(pageNo, pageSize), HttpStatus.OK);
     }
 
+
+
     @GetMapping("/{id}")
     public ResponseEntity<UserResponse> byId(@PathVariable Long id)
     {
@@ -60,6 +63,15 @@ public class UserController {
     )
     {
         return new ResponseEntity<>(userService.update(id, userRequest), HttpStatus.OK);
+    }
+
+    @PutMapping("/{id}/admin")
+    public ResponseEntity<UserResponse> updateByAdmin(
+            @PathVariable Long id,
+            @RequestBody @Valid UserRequest userRequest
+    )
+    {
+        return new ResponseEntity<>(userService.updateByAdmin(id, userRequest), HttpStatus.OK);
     }
 
     @PutMapping("/logo/{id}")
@@ -79,15 +91,21 @@ public class UserController {
         return new ResponseEntity<>(error, HttpStatus.OK);
     }
 
-    @GetMapping("/agence/{agenceId}")
-    public ResponseEntity<List<UserResponse>> allByAgence(@PathVariable Long agenceId)
+    @GetMapping("/agence")
+    public ResponseEntity<List<UserResponse>> allByAgence(
+            @RequestHeader("agenceId") Long agenceId,
+            @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
+            @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize
+    )
     {
-        List<UserResponse> users = userService.allByAgence(agenceId);
-        return new ResponseEntity<>(users, HttpStatus.OK);
+        return new ResponseEntity<>(userService.allByAgence(agenceId, pageNo, pageSize), HttpStatus.OK);
     }
 
-    @GetMapping("/{userId}/agence/{agenceId}")
-    public ResponseEntity<UserResponse> byIdAndAgence(@PathVariable Long userId, @PathVariable Long agenceId)
+    @GetMapping("/{userId}/agence")
+    public ResponseEntity<UserResponse> byIdAndAgence(
+            @PathVariable Long userId,
+            @RequestHeader("agenceId") Long agenceId
+    )
     {
         return new ResponseEntity<>(userService.byIdAndAgence(userId, agenceId), HttpStatus.OK);
     }
@@ -106,5 +124,14 @@ public class UserController {
         }
 
         return new ResponseEntity<>(new Error("Password not updated you have problem."), HttpStatus.BAD_REQUEST);
+    }
+
+    @GetMapping("/logged")
+    public ResponseEntity<UserResponse> profile(
+            @RequestHeader("id") Long id,
+            @RequestHeader("agenceId") Long agenceId
+    )
+    {
+        return new ResponseEntity<>(userService.byIdAndAgence(id, agenceId), HttpStatus.OK);
     }
 }

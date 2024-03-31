@@ -14,6 +14,8 @@ import java.util.List;
 public class AnnonceRequestPhoto {
 
     private String agentUpdatedBy;
+    private Long agenceId;
+
     @NotNull
     private List<MultipartFile> multipartFiles;
 }

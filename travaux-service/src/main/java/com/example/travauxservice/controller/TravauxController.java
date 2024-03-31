@@ -19,9 +19,12 @@ public class TravauxController {
     private final ITravauxService iTravauxService;
 
     @PostMapping
-    public ResponseEntity<TravauxDto> save(@RequestBody @Valid TravauxDto travauxDto)
+    public ResponseEntity<TravauxDto> save(
+            @RequestBody @Valid TravauxDto travauxDto,
+            @RequestHeader("agenceId") Long agenceId
+    )
     {
-        return new ResponseEntity<>(iTravauxService.save(travauxDto), HttpStatus.CREATED);
+        return new ResponseEntity<>(iTravauxService.save(agenceId, travauxDto), HttpStatus.CREATED);
     }
 
     @GetMapping
@@ -37,6 +40,25 @@ public class TravauxController {
     public ResponseEntity<TravauxDto> byId(@PathVariable Long id)
     {
         return new ResponseEntity<>(iTravauxService.byId(id),HttpStatus.OK);
+    }
+
+    @GetMapping("/agence")
+    public ResponseEntity<List<TravauxDto>> allByAgence(
+            @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
+            @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize,
+            @RequestHeader("agenceId") Long agenceId
+    )
+    {
+        return new ResponseEntity<>(iTravauxService.allByAgence(agenceId, pageNo, pageSize), HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}/agence")
+    public ResponseEntity<TravauxDto> byIdByAgence(
+            @PathVariable Long id,
+            @RequestHeader("agenceId") Long agenceId
+    )
+    {
+        return new ResponseEntity<>(iTravauxService.byIdByAgence(id, agenceId),HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
