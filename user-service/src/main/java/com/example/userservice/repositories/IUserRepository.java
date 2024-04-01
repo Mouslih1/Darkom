@@ -12,4 +12,5 @@ public interface IUserRepository extends JpaRepository<User, Long> {
     User findByUsername(String username);
     List<User> findByAgenceId(Long agenceId);
     Optional<User> findByIdAndAgenceId(Long userId, Long agenceId);
+    Optional<User> findByEmail(String email);
 }

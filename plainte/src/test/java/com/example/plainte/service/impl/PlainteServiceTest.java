@@ -2,11 +2,13 @@ package com.example.plainte.service.impl;
 
 import com.example.plainte.dto.PlainteDto;
 import com.example.plainte.entity.Plainte;
+import com.example.plainte.producers.PlainteProducer;
 import com.example.plainte.repository.IPlainteRepository;
 import org.assertj.core.api.Assertions;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import static org.assertj.core.api.AssertionsForClassTypes.setLenientDateParsing;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -31,6 +33,9 @@ class PlainteServiceTest {
     @Mock
     private IPlainteRepository iPlainteRepository;
 
+    @Mock
+    private PlainteProducer plainteProducer;
+
     @InjectMocks
     private PlainteService plainteService;
 
@@ -39,7 +44,7 @@ class PlainteServiceTest {
     {
         iPlainteRepository = Mockito.mock(IPlainteRepository.class);
         ModelMapper modelMapper = new ModelMapper();
-        plainteService = new PlainteService(iPlainteRepository, modelMapper);
+        plainteService = new PlainteService(iPlainteRepository, modelMapper, plainteProducer);
     }
 
     @Test
@@ -48,14 +53,18 @@ class PlainteServiceTest {
         Plainte plainte = new Plainte();
         plainte.setDescription("description 1");
         plainte.setSujet("sujet 1");
+        plainte.setPropreitaireCreatedBy("hahahaha");
+        plainte.setAgenceId(1L);
 
         PlainteDto plainteDto = new PlainteDto();
         plainteDto.setDescription("description 1");
         plainteDto.setSujet("sujet 1");
+        plainteDto.setPropreitaireCreatedBy("hahahaha");
+        plainteDto.setAgenceId(1L);
 
         when(iPlainteRepository.save(Mockito.any(Plainte.class))).thenReturn(plainte);
 
-        PlainteDto plainteDtoSaved = plainteService.save(1L, plainteDto);
+        PlainteDto plainteDtoSaved = plainteService.save(1L, plainteDto, null);
         System.out.println(plainteDtoSaved);
         System.out.println(plainte.getSujet());
         Assertions.assertThat(plainteDtoSaved.getId()).isEqualTo(plainte.getId());

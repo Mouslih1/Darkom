@@ -21,10 +21,11 @@ public class TravauxController {
     @PostMapping
     public ResponseEntity<TravauxDto> save(
             @RequestBody @Valid TravauxDto travauxDto,
-            @RequestHeader("agenceId") Long agenceId
+            @RequestHeader("agenceId") Long agenceId,
+            @RequestHeader("Authorization") String authorization
     )
     {
-        return new ResponseEntity<>(iTravauxService.save(agenceId, travauxDto), HttpStatus.CREATED);
+        return new ResponseEntity<>(iTravauxService.save(agenceId, travauxDto, authorization), HttpStatus.CREATED);
     }
 
     @GetMapping
@@ -71,6 +72,7 @@ public class TravauxController {
     public ResponseEntity<Error> delete(@PathVariable Long id)
     {
         Error error = new Error("Travaux deleted successfully.");
+        iTravauxService.delete(id);
         return new ResponseEntity<>(error, HttpStatus.OK);
     }
 }

@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface IPlainteService {
 
-    PlainteDto save(Long agenceId, PlainteDto plainteDto);
+    PlainteDto save(Long agenceId, PlainteDto plainteDto, String authorization);
     PlainteDto byId(Long id);
     List<PlainteDto> all(int pageNo, int pageSize);
     PlainteDto byIdByAgence(Long id, Long agenceId);

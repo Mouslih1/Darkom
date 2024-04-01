@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface ITravauxService {
 
-    TravauxDto save(Long agenceId,TravauxDto travauxDto);
+    TravauxDto save(Long agenceId,TravauxDto travauxDto, String authorization);
     TravauxDto update(Long id, TravauxDto travauxDto);
     void delete(Long id);
     List<TravauxDto> all(int pageNo, int pageSize);

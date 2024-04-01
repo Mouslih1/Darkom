@@ -40,7 +40,7 @@ public class PaymentSyndecal {
     @Enumerated(EnumType.STRING)
     private StatusPaymentSyndecal statusPaymentSyndecal;
     private Long agenceId;
-
+    private Long payerId;
     @CreatedBy
     private String agentCreatedBy;
     @LastModifiedBy

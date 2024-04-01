@@ -21,10 +21,11 @@ public class EvenementController {
     @PostMapping
     public ResponseEntity<EvenementDto> save(
             @RequestBody @Valid EvenementDto evenementDto,
-            @RequestHeader("agenceId") Long agenceId
+            @RequestHeader("agenceId") Long agenceId,
+            @RequestHeader("Authorization") String authorization
     )
     {
-        return new ResponseEntity<>(iEvenementService.save(agenceId,evenementDto), HttpStatus.CREATED);
+        return new ResponseEntity<>(iEvenementService.save(agenceId,evenementDto, authorization), HttpStatus.CREATED);
     }
 
     @GetMapping

@@ -1,5 +1,6 @@
 package com.example.evenementservice.service.impl;
 
+import com.example.evenementservice.producers.EvenementProducer;
 import org.assertj.core.api.Assertions;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -29,6 +30,9 @@ class EvenementServiceTest {
     @Mock
     private IEvenementRepository iEvenementRepository;
 
+    @Mock
+    private EvenementProducer evenementProducer;
+
     @InjectMocks
     private EvenementService evenementService;
 
@@ -37,7 +41,7 @@ class EvenementServiceTest {
     {
         iEvenementRepository = Mockito.mock(IEvenementRepository.class);
         ModelMapper modelMapper = new ModelMapper();
-        evenementService = new EvenementService(iEvenementRepository, modelMapper);
+        evenementService = new EvenementService(iEvenementRepository, modelMapper, evenementProducer);
     }
 
     @Test
@@ -53,7 +57,7 @@ class EvenementServiceTest {
 
         when(iEvenementRepository.save(Mockito.any(Evenement.class))).thenReturn(evenement);
 
-        EvenementDto evenementSaved = evenementService.save(1L, evenementDto);
+        EvenementDto evenementSaved = evenementService.save(1L, evenementDto, null);
         System.out.println(evenementSaved);
         System.out.println(evenement.getSujet());
         Assertions.assertThat(evenementSaved.getId()).isEqualTo(evenement.getId());

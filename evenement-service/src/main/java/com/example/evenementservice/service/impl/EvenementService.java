@@ -1,8 +1,10 @@
 package com.example.evenementservice.service.impl;
 
 import com.example.evenementservice.dto.EvenementDto;
+import com.example.evenementservice.dto.EvenementProducerDto;
 import com.example.evenementservice.entity.Evenement;
 import com.example.evenementservice.exception.NotFoundException;
+import com.example.evenementservice.producers.EvenementProducer;
 import com.example.evenementservice.repository.IEvenementRepository;
 import com.example.evenementservice.service.IEvenementService;
 import lombok.RequiredArgsConstructor;
@@ -20,15 +22,27 @@ public class EvenementService implements IEvenementService {
 
     private final IEvenementRepository iEvenementRepository;
     private final ModelMapper modelMapper;
+    private final EvenementProducer evenementProducer;
     private static final String EVENEMENT_NOT_FOUND = "Evenement not found with this id : ";
     private static final String EVENEMENT_OR_AGENCE_NOT_FOUND = "Evenement or agence not found with this id : ";
 
 
     @Override
-    public EvenementDto save(Long agenceId, EvenementDto evenementDto)
+    public EvenementDto save(Long agenceId, EvenementDto evenementDto, String authorization)
     {
         evenementDto.setAgenceId(agenceId);
         Evenement evenement = iEvenementRepository.save(modelMapper.map(evenementDto, Evenement.class));
+
+        evenementProducer.producerMessage(
+                new EvenementProducerDto(
+                        evenement.getId(),
+                        "Create an event",
+                        evenement.getPropreitaireCreatedBy(),
+                        null,
+                        evenement.getAgenceId(),
+                        authorization
+                )
+        );
         return modelMapper.map(evenement, EvenementDto.class);
     }
 

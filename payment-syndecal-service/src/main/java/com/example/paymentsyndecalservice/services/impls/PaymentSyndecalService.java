@@ -1,8 +1,10 @@
 package com.example.paymentsyndecalservice.services.impls;
 
 import com.example.paymentsyndecalservice.dtos.PaymentSyndecalDto;
+import com.example.paymentsyndecalservice.dtos.PaymentSyndicatProducerDto;
 import com.example.paymentsyndecalservice.entities.PaymentSyndecal;
 import com.example.paymentsyndecalservice.exceptions.NotFoundException;
+import com.example.paymentsyndecalservice.producers.PaymentSyndicatProducer;
 import com.example.paymentsyndecalservice.repositories.IPaymentSyndecalRepository;
 import com.example.paymentsyndecalservice.services.IPaymentSyndecalService;
 import lombok.RequiredArgsConstructor;
@@ -22,15 +24,28 @@ public class PaymentSyndecalService implements IPaymentSyndecalService {
 
     private final ModelMapper modelMapper;
     private final IPaymentSyndecalRepository iPaymentSyndecalRepository;
+    private final PaymentSyndicatProducer paymentSyndicatProducer;
     private static final String PAYMENT_SYNDECAL_NOT_FOUND = "Payment syndecal not found with this id : ";
     private static final String PAYMENT_SYNDECAL_OR_AGENCE_NOT_FOUND = "Payment syndecal or agence not found with this id : ";
 
 
     @Override
-    public PaymentSyndecalDto save(Long agenceId, PaymentSyndecalDto paymentSyndecalDto)
+    public PaymentSyndecalDto save(Long agenceId, PaymentSyndecalDto paymentSyndecalDto, String authorization)
     {
         paymentSyndecalDto.setAgenceId(agenceId);
         PaymentSyndecal paymentSyndecal = iPaymentSyndecalRepository.save(modelMapper.map(paymentSyndecalDto, PaymentSyndecal.class));
+
+        paymentSyndicatProducer.producerMessage(
+                new PaymentSyndicatProducerDto(
+                        paymentSyndecal.getId(),
+                        "Create an payment syndicat",
+                        paymentSyndecal.getAgentCreatedBy(),
+                        null,
+                        paymentSyndecal.getAgenceId(),
+                        authorization,
+                        paymentSyndecal.getPayerId()
+                )
+        );
         return modelMapper.map(paymentSyndecal, PaymentSyndecalDto.class);
     }
 

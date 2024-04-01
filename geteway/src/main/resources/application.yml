@@ -37,6 +37,13 @@ spring:
           filters:
             - AuthenticationFilter
 
+        - id: notifications
+          uri: http://localhost:8111
+          predicates:
+            - Path=/api/v1/notifications/**
+          filters:
+            - AuthenticationFilter
+
         - id: immeubles
           uri: http://localhost:8187
           predicates:

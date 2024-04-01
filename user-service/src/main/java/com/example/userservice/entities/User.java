@@ -53,4 +53,5 @@ public class User {
     private LocalDateTime updatedAt;
     private Long agenceId;
     private boolean isDelete = Boolean.FALSE;
+
 }

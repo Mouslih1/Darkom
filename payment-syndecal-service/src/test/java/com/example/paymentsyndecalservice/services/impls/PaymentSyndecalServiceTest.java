@@ -3,8 +3,8 @@ package com.example.paymentsyndecalservice.services.impls;
 import com.example.paymentsyndecalservice.dtos.PaymentSyndecalDto;
 import com.example.paymentsyndecalservice.entities.PaymentSyndecal;
 import com.example.paymentsyndecalservice.entities.enums.MethodePaymentSyndecal;
+import com.example.paymentsyndecalservice.producers.PaymentSyndicatProducer;
 import com.example.paymentsyndecalservice.repositories.IPaymentSyndecalRepository;
-import com.example.paymentsyndecalservice.services.IPaymentSyndecalService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,6 +32,9 @@ class PaymentSyndecalServiceTest {
     @Mock
     private IPaymentSyndecalRepository iPaymentSyndecalRepository;
 
+    @Mock
+    private PaymentSyndicatProducer paymentSyndicatProducer;
+
     @InjectMocks
     private PaymentSyndecalService paymentSyndecalService;
 
@@ -40,7 +43,7 @@ class PaymentSyndecalServiceTest {
     {
         iPaymentSyndecalRepository = Mockito.mock(IPaymentSyndecalRepository.class);
         ModelMapper modelMapper = new ModelMapper();
-        paymentSyndecalService = new PaymentSyndecalService(modelMapper, iPaymentSyndecalRepository);
+        paymentSyndecalService = new PaymentSyndecalService(modelMapper, iPaymentSyndecalRepository, paymentSyndicatProducer);
     }
 
     @Test
@@ -57,7 +60,7 @@ class PaymentSyndecalServiceTest {
 
         when(iPaymentSyndecalRepository.save(Mockito.any(PaymentSyndecal.class))).thenReturn(paymentSyndecal);
 
-        PaymentSyndecalDto paymentSyndecalDtoSaved = paymentSyndecalService.save(1L, paymentSyndecalDto);
+        PaymentSyndecalDto paymentSyndecalDtoSaved = paymentSyndecalService.save(1L, paymentSyndecalDto, null);
         System.out.println(paymentSyndecalDtoSaved);
         System.out.println(paymentSyndecalDtoSaved.getDescription());
         Assertions.assertThat(paymentSyndecalDtoSaved.getId()).isEqualTo(paymentSyndecal.getId());

@@ -3,6 +3,7 @@ package com.example.travauxservice.service.impl;
 import com.example.travauxservice.dto.TravauxDto;
 import com.example.travauxservice.entity.Travaux;
 import com.example.travauxservice.entity.enums.Etat;
+import com.example.travauxservice.producers.TravauxProducer;
 import com.example.travauxservice.repository.ITravauxRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,6 +32,9 @@ class TravauxServiceTest {
     @Mock
     private ITravauxRepository iTravauxRepository;
 
+    @Mock
+    private TravauxProducer travauxProducer;
+
     @InjectMocks
     private TravauxService travauxService;
 
@@ -39,7 +43,7 @@ class TravauxServiceTest {
     {
         iTravauxRepository = Mockito.mock(ITravauxRepository.class);
         ModelMapper modelMapper = new ModelMapper();
-        travauxService = new TravauxService(modelMapper, iTravauxRepository);
+        travauxService = new TravauxService(modelMapper, iTravauxRepository, travauxProducer);
     }
 
     @Test
@@ -55,7 +59,7 @@ class TravauxServiceTest {
 
         when(iTravauxRepository.save(Mockito.any(Travaux.class))).thenReturn(travaux);
 
-        TravauxDto travauxDtoSaved = travauxService.save(1L, travauxDto);
+        TravauxDto travauxDtoSaved = travauxService.save(1L, travauxDto, null);
         System.out.println(travauxDtoSaved);
         System.out.println(travaux.getDescription());
         Assertions.assertThat(travauxDtoSaved.getId()).isEqualTo(travaux.getId());

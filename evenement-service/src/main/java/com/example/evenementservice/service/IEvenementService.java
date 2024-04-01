@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface IEvenementService {
 
-    EvenementDto save(Long agenceId, EvenementDto evenementDto);
+    EvenementDto save(Long agenceId, EvenementDto evenementDto,String authorization);
     EvenementDto update(Long id, EvenementDto evenementDto);
     void delete(Long id);
     List<EvenementDto> all(int pageNo, int pageSize);

@@ -9,6 +9,7 @@ import com.example.userservice.exceptions.NotFoundException;
 import com.example.userservice.exceptions.ValidationException;
 import com.example.userservice.repositories.IUserRepository;
 import com.example.userservice.services.IUserService;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -21,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -34,13 +35,14 @@ public class UserService implements IUserService {
     private final MediaClient mediaClient;
     private final static String USER_OR_AGENCE_NOT_FOUND = "User or agence not found with this id's : ";
     private final static String USER_NOT_FOUND = "User not found with this id : ";
+    private final static String USER_NOT_FOUND_WITH_EMAIL = "User not found with this email : ";
     private final EmailSenderService emailSenderService;
     private final PasswordEncoder passwordEncoder;
 
     @Override
     public UserResponse save(Long agenceId , UserRequest userRequest)
     {
-        emailSenderService.sendEmail(
+        emailSenderService.sendToEmailGeneratePasswordFor(
                 userRequest.getEmail(),
                 "Generate password.",
                 "This is your password : " + userRequest.getPassword()
@@ -180,6 +182,21 @@ public class UserService implements IUserService {
     }
 
     @Override
+    public List<UserResponse> getUsersByAgenceForNotifie(Long agenceId)
+    {
+        List<User> users = userRepository.findByAgenceId(agenceId);
+
+        return users
+                .stream()
+                .map((user) -> {
+                    UserDto userDto = modelMapper.map(user, UserDto.class);
+                    List<MediaDto> medias = mediaClient.getMediaByRelatedId(userDto.getId(), MediaStatus.PHOTO_PROFIL).getBody();
+                    return new UserResponse(userDto, medias);
+                })
+                .toList();
+    }
+
+    @Override
     public UserResponse byIdAndAgence(Long userId, Long agenceId)
     {
         User user = userRepository.findByIdAndAgenceId(userId, agenceId)
@@ -191,9 +208,9 @@ public class UserService implements IUserService {
     @Override
     public UserResponse saveByAdmin(UserRequest userRequest)
     {
-        emailSenderService.sendEmail(
+        emailSenderService.sendToEmailGeneratePasswordFor(
                 userRequest.getEmail(),
-                "Generate password.",
+                "Generate password",
                 "This is your password : " + userRequest.getPassword()
         );
 
@@ -208,9 +225,9 @@ public class UserService implements IUserService {
 
         if(passwordEncoder.matches(userPasswordDto.getCurrentPassword(), user.getPassword()))
         {
-            emailSenderService.sendEmail(
+            emailSenderService.sendToEmailGeneratePasswordFor(
                     user.getEmail(),
-                    "Take you new password.",
+                    "Take you new password",
                     "This is your new password : " + userPasswordDto.getNewPassword()
             );
 
@@ -221,5 +238,27 @@ public class UserService implements IUserService {
         }
 
         return false;
+    }
+
+    @Override
+    public void forgotPassword(String email) throws MessagingException
+    {
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_WITH_EMAIL + email));
+
+        emailSenderService.sendToEmailSetPassword(email, "Set Password");
+    }
+
+    @Override
+    public void setPassword(String email, String newPassword)
+    {
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_WITH_EMAIL + email));
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+    }
+
+    @Override
+    public User byUsername(String username)
+    {
+        return userRepository.findByUsername(username);
     }
 }

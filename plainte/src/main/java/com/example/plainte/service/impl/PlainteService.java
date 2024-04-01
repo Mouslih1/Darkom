@@ -1,8 +1,10 @@
 package com.example.plainte.service.impl;
 
 import com.example.plainte.dto.PlainteDto;
+import com.example.plainte.dto.PlainteProducerDto;
 import com.example.plainte.entity.Plainte;
 import com.example.plainte.exception.NotFoundException;
+import com.example.plainte.producers.PlainteProducer;
 import com.example.plainte.repository.IPlainteRepository;
 import com.example.plainte.service.IPlainteService;
 import lombok.RequiredArgsConstructor;
@@ -24,13 +26,25 @@ public class PlainteService implements IPlainteService {
     private final ModelMapper modelMapper;
     private static final String PLAINTE_NOT_FOUND = "Plainte not found this id : ";
     private static final String PLAINTE_OR_AGENCE_NOT_FOUND = "Plainte or agence not found this id : ";
+    private final PlainteProducer plainteProducer;
 
 
     @Override
-    public PlainteDto save(Long agenceId, PlainteDto plainteDto)
+    public PlainteDto save(Long agenceId, PlainteDto plainteDto, String authorization)
     {
         plainteDto.setAgenceId(agenceId);
         Plainte plainte = iPlainteRepository.save(modelMapper.map(plainteDto, Plainte.class));
+
+        plainteProducer.producerMessage(
+                new PlainteProducerDto(
+                        plainte.getId(),
+                        "Create an complaint",
+                        plainte.getPropreitaireCreatedBy(),
+                        null,
+                        plainte.getAgenceId(),
+                        authorization)
+        );
+
         return modelMapper.map(plainte, PlainteDto.class);
     }
 

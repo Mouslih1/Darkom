@@ -1,8 +1,10 @@
 package com.example.travauxservice.service.impl;
 
 import com.example.travauxservice.dto.TravauxDto;
+import com.example.travauxservice.dto.TravauxProducerDto;
 import com.example.travauxservice.entity.Travaux;
 import com.example.travauxservice.exception.NotFoundException;
+import com.example.travauxservice.producers.TravauxProducer;
 import com.example.travauxservice.repository.ITravauxRepository;
 import com.example.travauxservice.service.ITravauxService;
 import lombok.RequiredArgsConstructor;
@@ -24,13 +26,26 @@ public class TravauxService implements ITravauxService {
     private final ITravauxRepository iTravauxRepository;
     private static final String TRAVAUX_NOT_FOUND = "Travaux not found with this id : ";
     private static final String TRAVAUX_OR_AGENCE_NOT_FOUND = "Travaux or agence not found with this id : ";
+    private final TravauxProducer travauxProducer;
 
 
     @Override
-    public TravauxDto save(Long agenceId, TravauxDto travauxDto)
+    public TravauxDto save(Long agenceId, TravauxDto travauxDto, String authorization)
     {
         travauxDto.setAgenceId(agenceId);
         Travaux travaux = iTravauxRepository.save(modelMapper.map(travauxDto, Travaux.class));
+
+        travauxProducer.producerMessage(
+                new TravauxProducerDto(
+                        travaux.getId(),
+                        "Create an travaux",
+                        travaux.getSyndecCreatedBy(),
+                        null,
+                        travaux.getAgenceId(),
+                        authorization
+                )
+        );
+
         return modelMapper.map(travaux, TravauxDto.class);
     }
 
