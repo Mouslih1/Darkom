@@ -17,6 +17,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/immeubles")
 @RequiredArgsConstructor
+@CrossOrigin("*")
 public class ImmeubleController {
 
     private final IimmeubleService iimmeubleService;

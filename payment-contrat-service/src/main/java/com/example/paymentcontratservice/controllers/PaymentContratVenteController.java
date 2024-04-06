@@ -15,6 +15,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/payment-contrat-ventes")
+@CrossOrigin("*")
 public class PaymentContratVenteController {
 
     private final IPaymentContratVenteService iPaymentContratVenteService;

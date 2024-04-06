@@ -48,5 +48,4 @@ public class NotificationConsumer {
         notificationService.sendPaymentsSyndicatNotifications(paymentSyndicatProducerDto);
         notificationService.sendPayementsSyndicatNotificationForPayer(paymentSyndicatProducerDto);
     }
-
 }

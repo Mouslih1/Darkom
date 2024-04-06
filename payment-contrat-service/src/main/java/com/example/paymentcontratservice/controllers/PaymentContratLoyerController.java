@@ -13,6 +13,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/payment-contrat-loyers")
+@CrossOrigin("*")
 public class PaymentContratLoyerController {
 
     private final IPaymentContratLoyerService iPaymentContratLoyerService;

@@ -14,6 +14,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/contrats")
+@CrossOrigin("*")
 public class ContratController {
 
     private final IContratService iContratService;

@@ -14,6 +14,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/travaux")
 @RequiredArgsConstructor
+@CrossOrigin("*")
 public class TravauxController {
 
     private final ITravauxService iTravauxService;

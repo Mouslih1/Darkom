@@ -16,6 +16,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/annonces")
+@CrossOrigin("*")
 public class AnnonceController {
 
     private final IAnnonceService iAnnonceService;

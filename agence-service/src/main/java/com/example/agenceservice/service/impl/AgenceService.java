@@ -59,7 +59,6 @@ public class AgenceService implements IAgenceService {
         agence.setAddress(agenceRequest.getAddress());
         agence.setTelephone(agenceRequest.getTelephone());
         agence.setName(agenceRequest.getName());
-        agence.setVille(agenceRequest.getVille());
 
         Agence agenceUpdated = agenceRepository.save(agence);
         List<MediaDto> mediaDto = mediaClient.getMediaByRelatedId(agence.getId(), MediaStatus.LOGO_AGENCE).getBody();

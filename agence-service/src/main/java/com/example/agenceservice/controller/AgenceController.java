@@ -19,6 +19,7 @@ import java.util.List;
 @Transactional
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/agences")
+@CrossOrigin("*")
 public class AgenceController {
 
     private final AgenceService agenceService;

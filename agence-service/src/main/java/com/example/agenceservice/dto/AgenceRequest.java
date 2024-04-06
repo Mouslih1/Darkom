@@ -20,8 +20,6 @@ public class AgenceRequest {
     @NotBlank
     private String address;
     @NotBlank
-    private String ville;
-    @NotBlank
     private String telephone;
     @NotBlank
     @Email

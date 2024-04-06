@@ -13,6 +13,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/plaintes")
+@CrossOrigin("*")
 public class PlainteController {
 
     private final IPlainteService iPlainteService;

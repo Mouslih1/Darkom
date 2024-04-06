@@ -13,6 +13,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/payment-syndecals")
+@CrossOrigin("*")
 public class PaymentSyndecalController {
 
     private final IPaymentSyndecalService iPaymentSyndecalService;

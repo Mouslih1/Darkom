@@ -19,6 +19,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/medias")
 @RequiredArgsConstructor
+@CrossOrigin("*")
 public class MediaController {
 
     private final ImageService mediaService;

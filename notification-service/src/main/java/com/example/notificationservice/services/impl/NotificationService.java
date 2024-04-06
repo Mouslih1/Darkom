@@ -2,32 +2,31 @@ package com.example.notificationservice.services.impl;
 
 import com.example.evenementservice.dto.EvenementProducerDto;
 import com.example.notificationservice.client.UserClient;
-import com.example.notificationservice.dtos.NotificationDto;
 import com.example.notificationservice.dtos.UserResponse;
 import com.example.notificationservice.entities.Notification;
 import com.example.notificationservice.entities.User;
-import com.example.notificationservice.exception.NotFoundException;
 import com.example.notificationservice.exception.ValidationException;
-import com.example.notificationservice.repositories.NotificationRepository;
 import com.example.notificationservice.services.INotificationService;
 import com.example.paymentsyndecalservice.dtos.PaymentSyndicatProducerDto;
 import com.example.plainte.dto.PlainteProducerDto;
 import com.example.travauxservice.dto.TravauxProducerDto;
+import com.google.firebase.database.*;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestHeader;
 
+import java.time.Instant;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class NotificationService implements INotificationService {
 
-    private final NotificationRepository notificationRepository;
-    private final ModelMapper modelMapper;
     private final UserClient userClient;
-    private static final String NOTIFICATION_NOT_FOUND = "Notification not found with this id : ";
 
     @Override
     public void sendTravauxNotifications(TravauxProducerDto travauxProducerDto)
@@ -42,16 +41,40 @@ public class NotificationService implements INotificationService {
         {
             if(!user.getUserDto().getUsername().equals(userCreateTravaux.getUsername()))
             {
-                notifyMembers(
+                saveFirebase(
                         Notification.builder()
                                 .agenceId(travauxProducerDto.getAgenceId())
                                 .message(travauxProducerDto.getMessage())
                                 .receivedId(user.getUserDto().getId())
+                                .relatedId(travauxProducerDto.getRelatedId())
                                 .senderUsername(travauxProducerDto.getSenderUsername())
                                 .build()
                 );
             }
         }
+    }
+
+    public void saveFirebase(Notification notification)
+    {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference notificationsRef = database.getReference("notifications");
+
+
+        String key = notificationsRef.push().getKey();
+
+        Map<String, Object> notificationData = new HashMap<>();
+        notificationData.put("relatedId", notification.getRelatedId());
+        notificationData.put("message", notification.getMessage());
+        notificationData.put("receivedId", notification.getReceivedId());
+        notificationData.put("senderUsername", notification.getSenderUsername());
+        notificationData.put("agenceId", notification.getAgenceId());
+        notificationData.put("seen", false);
+        notificationData.put("createdAt", Date.from(Instant.now()));
+
+        log.debug("Notification data: {}", notificationData);
+
+        notificationsRef.child(key).setValueAsync(notificationData);
+        log.info("Notification sent successfully");
     }
 
     @Override
@@ -60,50 +83,37 @@ public class NotificationService implements INotificationService {
         User user = userClient.byUsername(travauxProducerDto.getSenderUsername(), travauxProducerDto.getToken()).getBody();
         assert user != null;
 
-        notifyMembers(
+        saveFirebase(
                 Notification.builder()
                         .agenceId(travauxProducerDto.getAgenceId())
                         .message("You are create an travaux")
                         .receivedId(user.getId())
-                        .senderUsername(user.getUsername())
+                        .relatedId(travauxProducerDto.getRelatedId())
+                        .senderUsername(travauxProducerDto.getSenderUsername())
                         .build()
         );
     }
 
-    public void notifyMembers(Notification notification)
-    {
-        notificationRepository.save(notification);
-    }
-
-    @Override
-    public List<NotificationDto> allNotificationByMember(Long userId)
-    {
-        List<Notification> notifications = notificationRepository.findByReceivedId(userId);
-
-        return notifications
-                .stream()
-                .map((element) -> modelMapper.map(element, NotificationDto.class))
-                .toList();
-    }
-
-    @Override
-    public void markNotificationAsSeen(Long notificationId, @RequestHeader("id") Long userId)
-    {
-        Notification notification = notificationRepository.findById(notificationId).orElseThrow(() -> new NotFoundException(NOTIFICATION_NOT_FOUND + notificationId));
-        validation(notification, userId);
-        notification.setSeen(true);
-        notificationRepository.save(notification);
-    }
-
-    @Override
-    public NotificationDto byId(Long id, @RequestHeader("id") Long userId)
-    {
-        Notification notification = notificationRepository.findById(id).orElseThrow(() -> new NotFoundException(NOTIFICATION_NOT_FOUND + id));
-        validation(notification, userId);
-        notification.setSeen(true);
-        notificationRepository.save(notification);
-        return modelMapper.map(notification, NotificationDto.class);
-    }
+//    @Override
+//    public List<NotificationDto> allNotificationByMember(Long userId)
+//    {
+//        List<Notification> notifications = notificationRepository.findByReceivedId(userId);
+//
+//        return notifications
+//                .stream()
+//                .map((element) -> modelMapper.map(element, NotificationDto.class))
+//                .toList();
+//    }
+//
+//    @Override
+//    public NotificationDto byId(Long id, @RequestHeader("id") Long userId)
+//    {
+//        Notification notification = notificationRepository.findById(id).orElseThrow(() -> new NotFoundException(NOTIFICATION_NOT_FOUND + id));
+//        validation(notification, userId);
+//        notification.setSeen(true);
+//        notificationRepository.save(notification);
+//        return modelMapper.map(notification, NotificationDto.class);
+//    }
 
     @Override
     public void sendPaymentsSyndicatNotifications(PaymentSyndicatProducerDto paymentSyndicatProducerDto)
@@ -119,12 +129,13 @@ public class NotificationService implements INotificationService {
         {
             if(!user.getUserDto().getId().equals(paymentSyndicatProducerDto.getPayerId()))
             {
-                notifyMembers(
+                saveFirebase(
                         Notification.builder()
                                 .agenceId(paymentSyndicatProducerDto.getAgenceId())
                                 .message(paymentSyndicatProducerDto.getMessage())
                                 .receivedId(user.getUserDto().getId())
-                                .senderUsername(userResponse.getUserDto().getUsername())
+                                .relatedId(paymentSyndicatProducerDto.getRelatedId())
+                                .senderUsername(paymentSyndicatProducerDto.getSenderUsername())
                                 .build()
                 );
             }
@@ -137,12 +148,13 @@ public class NotificationService implements INotificationService {
         UserResponse userResponse = userClient.byIdFeign(paymentSyndicatProducerDto.getPayerId(), paymentSyndicatProducerDto.getToken()).getBody();
         assert userResponse != null;
 
-        notifyMembers(
+        saveFirebase(
                 Notification.builder()
                         .agenceId(paymentSyndicatProducerDto.getAgenceId())
                         .message("You are create an payment syndicat")
                         .receivedId(paymentSyndicatProducerDto.getPayerId())
-                        .senderUsername(userResponse.getUserDto().getUsername())
+                        .relatedId(paymentSyndicatProducerDto.getRelatedId())
+                        .senderUsername(paymentSyndicatProducerDto.getSenderUsername())
                         .build()
         );
     }
@@ -160,11 +172,12 @@ public class NotificationService implements INotificationService {
         {
             if(!user.getUserDto().getUsername().equals(userCreateEvenement.getUsername()))
             {
-                notifyMembers(
+                saveFirebase(
                         Notification.builder()
                                 .agenceId(evenementProducerDto.getAgenceId())
                                 .message(evenementProducerDto.getMessage())
                                 .receivedId(user.getUserDto().getId())
+                                .relatedId(evenementProducerDto.getRelatedId())
                                 .senderUsername(evenementProducerDto.getSenderUsername())
                                 .build()
                 );
@@ -185,11 +198,12 @@ public class NotificationService implements INotificationService {
         {
             if(!user.getUserDto().getUsername().equals(userCreatePlainte.getUsername()))
             {
-                notifyMembers(
+                saveFirebase(
                         Notification.builder()
                                 .agenceId(plainteProducerDto.getAgenceId())
                                 .message(plainteProducerDto.getMessage())
                                 .receivedId(user.getUserDto().getId())
+                                .relatedId(plainteProducerDto.getRelatedId())
                                 .senderUsername(plainteProducerDto.getSenderUsername())
                                 .build()
                 );
@@ -203,11 +217,12 @@ public class NotificationService implements INotificationService {
         User user = userClient.byUsername(plainteProducerDto.getSenderUsername(), plainteProducerDto.getToken()).getBody();
         assert user != null;
 
-        notifyMembers(
+        saveFirebase(
                 Notification.builder()
                         .agenceId(plainteProducerDto.getAgenceId())
                         .message("You are create an complainte")
                         .receivedId(user.getId())
+                        .relatedId(plainteProducerDto.getRelatedId())
                         .senderUsername(user.getUsername())
                         .build()
         );
@@ -219,14 +234,42 @@ public class NotificationService implements INotificationService {
         User user = userClient.byUsername(evenementProducerDto.getSenderUsername(), evenementProducerDto.getToken()).getBody();
         assert user != null;
 
-        notifyMembers(
+        saveFirebase(
                 Notification.builder()
                         .agenceId(evenementProducerDto.getAgenceId())
-                        .message("You are create an event")
+                        .message("You are create an complainte")
                         .receivedId(user.getId())
+                        .relatedId(evenementProducerDto.getRelatedId())
                         .senderUsername(user.getUsername())
                         .build()
         );
+    }
+
+    @Override
+    public void deleteNotificationFirebase(String key)
+    {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference notificationsRef = database.getReference("notifications");
+        log.debug("Notification ID: {}", key);
+
+        notificationsRef.child(key).removeValueAsync();
+        log.info("Notification deleted successfully");
+    }
+
+    @Override
+    public void markAsSeenFirebase(String key)
+    {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference notificationsRef = database.getReference("notifications");
+        log.debug("Notification ID: {}", key);
+
+        Map<String, Object> noficationUpdated = new HashMap<>();
+        noficationUpdated.put("seen", true);
+
+        notificationsRef.child(key).updateChildrenAsync(
+                noficationUpdated
+        );
+        log.info("Notification updated successfully");
     }
 
     public void validation(Notification notification, Long userId)
