@@ -35,7 +35,7 @@ public class AgenceController {
     @PutMapping( "/{agenceId}")
     public ResponseEntity<AgenceResponse> update(
             @PathVariable Long agenceId,
-            @ModelAttribute @Valid AgenceRequest agenceRequest
+            @RequestBody @Valid AgenceRequest agenceRequest
     )
     {
         return new ResponseEntity<>(agenceService.update(agenceId, agenceRequest), HttpStatus.OK);
