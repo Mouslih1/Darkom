@@ -40,5 +40,6 @@ public class UserRequest {
     private LocalDateTime updatedAt;
     @NotNull
     private LocalDate dateNaissance;
+    @NotNull
     private List<MultipartFile> multipartFiles;
 }

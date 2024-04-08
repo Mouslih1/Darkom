@@ -61,7 +61,6 @@ public class FileStorageService {
                     StandardCopyOption.REPLACE_EXISTING);
         }
 
-       // String fileUrl = String.format("http://localhost:8222/api/v1/medias/images/" + encodedFilename);
         String fileUrl = "http://localhost:8222/api/v1/medias/images/" + encodedFilename;
 
         return MediaDto.builder()

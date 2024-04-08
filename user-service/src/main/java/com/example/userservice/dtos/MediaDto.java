@@ -27,5 +27,4 @@ public class MediaDto {
     private Long size;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-
 }

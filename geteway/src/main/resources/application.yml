@@ -38,17 +38,23 @@ spring:
           filters:
             - AuthenticationFilter
 
-        - id: medias
-          uri: http://localhost:8086
-          predicates:
-            - Path=/api/v1/medias/**
-          filters:
-            - AuthenticationFilter
-
         - id: notifications
           uri: http://localhost:8111
           predicates:
             - Path=/api/v1/notifications/**
+          filters:
+            - AuthenticationFilter
+
+        - id: medias_images
+          uri: http://localhost:8086
+          predicates:
+            - Path=/api/v1/medias/images/**
+            - Method=GET
+
+        - id: medias
+          uri: http://localhost:8086
+          predicates:
+            - Path=/api/v1/medias/**
           filters:
             - AuthenticationFilter
 

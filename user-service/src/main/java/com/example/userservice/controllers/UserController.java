@@ -83,9 +83,9 @@ public class UserController {
         return new ResponseEntity<>(userService.updateByAdmin(id, userRequest), HttpStatus.OK);
     }
 
-    @PutMapping("/logo/{id}")
+    @PutMapping("/photo")
     public ResponseEntity<UserResponse> updatePhotoProfil(
-            @PathVariable Long id,
+            @RequestHeader("id") Long id,
             @ModelAttribute @Valid UserRequestLogo userRequestLogo
     )
     {

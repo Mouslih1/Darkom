@@ -36,7 +36,6 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable);
         http.sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.authorizeHttpRequests(auth ->{
-          //  auth.requestMatchers("/api/v1/users/register").permitAll();
             auth.requestMatchers("api/v1/users/forgot-password").permitAll();
             auth.requestMatchers("api/v1/users/set-password").permitAll();
             auth.anyRequest().authenticated();
