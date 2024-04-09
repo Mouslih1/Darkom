@@ -23,10 +23,11 @@ public class EvenementController {
     public ResponseEntity<EvenementDto> save(
             @RequestBody @Valid EvenementDto evenementDto,
             @RequestHeader("agenceId") Long agenceId,
+            @RequestHeader("id") Long userCreateNotification,
             @RequestHeader("Authorization") String authorization
     )
     {
-        return new ResponseEntity<>(iEvenementService.save(agenceId,evenementDto, authorization), HttpStatus.CREATED);
+        return new ResponseEntity<>(iEvenementService.save(agenceId,userCreateNotification ,evenementDto, authorization), HttpStatus.CREATED);
     }
 
     @GetMapping

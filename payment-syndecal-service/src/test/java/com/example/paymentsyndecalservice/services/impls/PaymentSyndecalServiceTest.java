@@ -60,7 +60,7 @@ class PaymentSyndecalServiceTest {
 
         when(iPaymentSyndecalRepository.save(Mockito.any(PaymentSyndecal.class))).thenReturn(paymentSyndecal);
 
-        PaymentSyndecalDto paymentSyndecalDtoSaved = paymentSyndecalService.save(1L, paymentSyndecalDto, null);
+        PaymentSyndecalDto paymentSyndecalDtoSaved = paymentSyndecalService.save(1L, null,paymentSyndecalDto, null);
         System.out.println(paymentSyndecalDtoSaved);
         System.out.println(paymentSyndecalDtoSaved.getDescription());
         Assertions.assertThat(paymentSyndecalDtoSaved.getId()).isEqualTo(paymentSyndecal.getId());

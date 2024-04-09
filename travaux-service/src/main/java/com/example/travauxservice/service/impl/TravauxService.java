@@ -30,7 +30,7 @@ public class TravauxService implements ITravauxService {
 
 
     @Override
-    public TravauxDto save(Long agenceId, TravauxDto travauxDto, String authorization)
+    public TravauxDto save(Long agenceId,Long userCreateNotification ,TravauxDto travauxDto, String authorization)
     {
         travauxDto.setAgenceId(agenceId);
         Travaux travaux = iTravauxRepository.save(modelMapper.map(travauxDto, Travaux.class));
@@ -40,6 +40,7 @@ public class TravauxService implements ITravauxService {
                         travaux.getId(),
                         "Create an travaux",
                         travaux.getSyndecCreatedBy(),
+                        userCreateNotification,
                         null,
                         travaux.getAgenceId(),
                         authorization

@@ -64,7 +64,7 @@ class PlainteServiceTest {
 
         when(iPlainteRepository.save(Mockito.any(Plainte.class))).thenReturn(plainte);
 
-        PlainteDto plainteDtoSaved = plainteService.save(1L, plainteDto, null);
+        PlainteDto plainteDtoSaved = plainteService.save(1L,null ,plainteDto, null);
         System.out.println(plainteDtoSaved);
         System.out.println(plainte.getSujet());
         Assertions.assertThat(plainteDtoSaved.getId()).isEqualTo(plainte.getId());

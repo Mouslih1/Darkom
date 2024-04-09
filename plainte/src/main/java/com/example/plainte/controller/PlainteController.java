@@ -22,10 +22,11 @@ public class PlainteController {
     public ResponseEntity<PlainteDto> save(
             @RequestBody PlainteDto plainteDto,
             @RequestHeader("agenceId") Long agenceId,
+            @RequestHeader("id") Long userCreatedNotification,
             @RequestHeader("Authorization") String authorization
     )
     {
-        return new ResponseEntity<>(iPlainteService.save(agenceId, plainteDto, authorization), HttpStatus.CREATED);
+        return new ResponseEntity<>(iPlainteService.save(agenceId,userCreatedNotification ,plainteDto, authorization), HttpStatus.CREATED);
     }
 
     @GetMapping

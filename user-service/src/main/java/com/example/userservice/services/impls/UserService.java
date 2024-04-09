@@ -95,16 +95,15 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public UserResponse update(Long id, UserRequest userRequest)
+    public UserResponse update(Long id, UserUpdateRequest userRequest)
     {
         User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException(USER_NOT_FOUND + id));
         user.setAddress(userRequest.getAddress());
         user.setEmail(userRequest.getEmail());
 
-        if(userRequest.getRole().equals(Role.ADMIN))
+        System.out.println(user.getRole());
+        if(user.getRole().equals(Role.ADMIN))
         {
-            throw new ValidationException("You can't add user in Admin state !");
-        }else{
             user.setRole(userRequest.getRole());
         }
 
@@ -120,7 +119,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public UserResponse updateByAdmin(Long id, UserRequest userRequest)
+    public UserResponse updateByAdmin(Long id, UserUpdateRequest userRequest)
     {
         User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException(USER_NOT_FOUND + id));
 
@@ -260,5 +259,14 @@ public class UserService implements IUserService {
     public User byUsername(String username)
     {
         return userRepository.findByUsername(username);
+    }
+
+    @Override
+    public UserResponse getByUsername(String username)
+    {
+        User user = userRepository.findByUsername(username);
+        List<MediaDto> medias = mediaClient.getMediaByRelatedId(user.getId(), MediaStatus.PHOTO_PROFIL).getBody();
+
+        return new UserResponse(modelMapper.map(user, UserDto.class), medias);
     }
 }

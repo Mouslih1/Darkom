@@ -30,7 +30,7 @@ public class PaymentSyndecalService implements IPaymentSyndecalService {
 
 
     @Override
-    public PaymentSyndecalDto save(Long agenceId, PaymentSyndecalDto paymentSyndecalDto, String authorization)
+    public PaymentSyndecalDto save(Long agenceId,Long userCreateNotification, PaymentSyndecalDto paymentSyndecalDto, String authorization)
     {
         paymentSyndecalDto.setAgenceId(agenceId);
         PaymentSyndecal paymentSyndecal = iPaymentSyndecalRepository.save(modelMapper.map(paymentSyndecalDto, PaymentSyndecal.class));
@@ -40,6 +40,7 @@ public class PaymentSyndecalService implements IPaymentSyndecalService {
                         paymentSyndecal.getId(),
                         "Create an payment syndicat",
                         paymentSyndecal.getAgentCreatedBy(),
+                        userCreateNotification,
                         null,
                         paymentSyndecal.getAgenceId(),
                         authorization,

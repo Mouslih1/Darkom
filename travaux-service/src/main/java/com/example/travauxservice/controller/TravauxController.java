@@ -23,10 +23,11 @@ public class TravauxController {
     public ResponseEntity<TravauxDto> save(
             @RequestBody @Valid TravauxDto travauxDto,
             @RequestHeader("agenceId") Long agenceId,
+            @RequestHeader("id") Long userCreateNotification,
             @RequestHeader("Authorization") String authorization
     )
     {
-        return new ResponseEntity<>(iTravauxService.save(agenceId, travauxDto, authorization), HttpStatus.CREATED);
+        return new ResponseEntity<>(iTravauxService.save(agenceId,userCreateNotification ,travauxDto, authorization), HttpStatus.CREATED);
     }
 
     @GetMapping

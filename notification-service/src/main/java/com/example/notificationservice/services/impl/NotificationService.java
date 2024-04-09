@@ -46,6 +46,7 @@ public class NotificationService implements INotificationService {
                                 .agenceId(travauxProducerDto.getAgenceId())
                                 .message(travauxProducerDto.getMessage())
                                 .receivedId(user.getUserDto().getId())
+                                .userCreateNotification(travauxProducerDto.getUserCreateNotification())
                                 .relatedId(travauxProducerDto.getRelatedId())
                                 .senderUsername(travauxProducerDto.getSenderUsername())
                                 .build()
@@ -65,6 +66,7 @@ public class NotificationService implements INotificationService {
         Map<String, Object> notificationData = new HashMap<>();
         notificationData.put("relatedId", notification.getRelatedId());
         notificationData.put("message", notification.getMessage());
+        notificationData.put("userCreateNotification", notification.getUserCreateNotification());
         notificationData.put("receivedId", notification.getReceivedId());
         notificationData.put("senderUsername", notification.getSenderUsername());
         notificationData.put("agenceId", notification.getAgenceId());
@@ -88,32 +90,12 @@ public class NotificationService implements INotificationService {
                         .agenceId(travauxProducerDto.getAgenceId())
                         .message("You are create an travaux")
                         .receivedId(user.getId())
+                        .userCreateNotification(travauxProducerDto.getUserCreateNotification())
                         .relatedId(travauxProducerDto.getRelatedId())
                         .senderUsername(travauxProducerDto.getSenderUsername())
                         .build()
         );
     }
-
-//    @Override
-//    public List<NotificationDto> allNotificationByMember(Long userId)
-//    {
-//        List<Notification> notifications = notificationRepository.findByReceivedId(userId);
-//
-//        return notifications
-//                .stream()
-//                .map((element) -> modelMapper.map(element, NotificationDto.class))
-//                .toList();
-//    }
-//
-//    @Override
-//    public NotificationDto byId(Long id, @RequestHeader("id") Long userId)
-//    {
-//        Notification notification = notificationRepository.findById(id).orElseThrow(() -> new NotFoundException(NOTIFICATION_NOT_FOUND + id));
-//        validation(notification, userId);
-//        notification.setSeen(true);
-//        notificationRepository.save(notification);
-//        return modelMapper.map(notification, NotificationDto.class);
-//    }
 
     @Override
     public void sendPaymentsSyndicatNotifications(PaymentSyndicatProducerDto paymentSyndicatProducerDto)
@@ -134,6 +116,7 @@ public class NotificationService implements INotificationService {
                                 .agenceId(paymentSyndicatProducerDto.getAgenceId())
                                 .message(paymentSyndicatProducerDto.getMessage())
                                 .receivedId(user.getUserDto().getId())
+                                .userCreateNotification(paymentSyndicatProducerDto.getUserCreateNotification())
                                 .relatedId(paymentSyndicatProducerDto.getRelatedId())
                                 .senderUsername(paymentSyndicatProducerDto.getSenderUsername())
                                 .build()
@@ -153,6 +136,7 @@ public class NotificationService implements INotificationService {
                         .agenceId(paymentSyndicatProducerDto.getAgenceId())
                         .message("You are create an payment syndicat")
                         .receivedId(paymentSyndicatProducerDto.getPayerId())
+                        .userCreateNotification(paymentSyndicatProducerDto.getUserCreateNotification())
                         .relatedId(paymentSyndicatProducerDto.getRelatedId())
                         .senderUsername(paymentSyndicatProducerDto.getSenderUsername())
                         .build()
@@ -177,6 +161,7 @@ public class NotificationService implements INotificationService {
                                 .agenceId(evenementProducerDto.getAgenceId())
                                 .message(evenementProducerDto.getMessage())
                                 .receivedId(user.getUserDto().getId())
+                                .userCreateNotification(evenementProducerDto.getUserCreateNotification())
                                 .relatedId(evenementProducerDto.getRelatedId())
                                 .senderUsername(evenementProducerDto.getSenderUsername())
                                 .build()
@@ -202,6 +187,7 @@ public class NotificationService implements INotificationService {
                         Notification.builder()
                                 .agenceId(plainteProducerDto.getAgenceId())
                                 .message(plainteProducerDto.getMessage())
+                                .userCreateNotification(plainteProducerDto.getUserCreatedNotification())
                                 .receivedId(user.getUserDto().getId())
                                 .relatedId(plainteProducerDto.getRelatedId())
                                 .senderUsername(plainteProducerDto.getSenderUsername())
@@ -221,6 +207,7 @@ public class NotificationService implements INotificationService {
                 Notification.builder()
                         .agenceId(plainteProducerDto.getAgenceId())
                         .message("You are create an complainte")
+                        .userCreateNotification(plainteProducerDto.getUserCreatedNotification())
                         .receivedId(user.getId())
                         .relatedId(plainteProducerDto.getRelatedId())
                         .senderUsername(user.getUsername())
@@ -239,6 +226,7 @@ public class NotificationService implements INotificationService {
                         .agenceId(evenementProducerDto.getAgenceId())
                         .message("You are create an complainte")
                         .receivedId(user.getId())
+                        .userCreateNotification(evenementProducerDto.getUserCreateNotification())
                         .relatedId(evenementProducerDto.getRelatedId())
                         .senderUsername(user.getUsername())
                         .build()

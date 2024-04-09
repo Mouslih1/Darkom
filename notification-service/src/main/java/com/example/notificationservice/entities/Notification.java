@@ -8,6 +8,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 
@@ -23,7 +24,8 @@ public class Notification {
     private Long relatedId;
     private Long receivedId;
     private String senderUsername;
+    private Long userCreateNotification;
     private Long agenceId;
-    private LocalDateTime createdAt;
+    private LocalDate createdAt;
     private boolean seen = Boolean.FALSE;
 }

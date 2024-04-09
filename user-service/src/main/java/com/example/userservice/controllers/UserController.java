@@ -1,9 +1,6 @@
 package com.example.userservice.controllers;
 
-import com.example.userservice.dtos.UserPasswordDto;
-import com.example.userservice.dtos.UserRequest;
-import com.example.userservice.dtos.UserRequestLogo;
-import com.example.userservice.dtos.UserResponse;
+import com.example.userservice.dtos.*;
 import com.example.userservice.entities.User;
 import com.example.userservice.exceptions.Error;
 import com.example.userservice.services.IUserService;
@@ -68,16 +65,25 @@ public class UserController {
     @PutMapping("/{id}")
     public ResponseEntity<UserResponse> update(
             @PathVariable Long id,
-            @RequestBody @Valid UserRequest userRequest
+            @RequestBody @Valid UserUpdateRequest userRequest
     )
     {
         return new ResponseEntity<>(userService.update(id, userRequest), HttpStatus.OK);
     }
 
+    @PutMapping("/update/logged")
+    public ResponseEntity<UserResponse> updateLoggedUser(
+            @RequestHeader("id") Long id,
+            @RequestBody @Valid UserUpdateRequest userUpdateRequest
+    )
+    {
+        return new ResponseEntity<>(userService.update(id, userUpdateRequest), HttpStatus.OK);
+    }
+
     @PutMapping("/{id}/admin")
     public ResponseEntity<UserResponse> updateByAdmin(
             @PathVariable Long id,
-            @RequestBody @Valid UserRequest userRequest
+            @RequestBody @Valid UserUpdateRequest userRequest
     )
     {
         return new ResponseEntity<>(userService.updateByAdmin(id, userRequest), HttpStatus.OK);
@@ -129,9 +135,9 @@ public class UserController {
         return new ResponseEntity<>(userService.byIdAndAgence(userId, agenceId), HttpStatus.OK);
     }
 
-    @PutMapping("/update-password/{id}")
+    @PutMapping("/update-password")
     public ResponseEntity<Error> updatePassword(
-            @PathVariable Long id,
+            @RequestHeader("id") Long id,
             @RequestBody @Valid UserPasswordDto userPasswordDto
     )
     {
@@ -161,6 +167,14 @@ public class UserController {
     )
     {
         return new ResponseEntity<>(userService.byUsername(username), HttpStatus.OK);
+    }
+
+    @GetMapping("/by")
+    public ResponseEntity<UserResponse> getByUsername(
+            @RequestParam String username
+    )
+    {
+        return new ResponseEntity<>(userService.getByUsername(username), HttpStatus.OK);
     }
 
     @PutMapping("/forgot-password")

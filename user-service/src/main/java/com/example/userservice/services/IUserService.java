@@ -12,8 +12,8 @@ public interface IUserService {
     UserResponse save(Long agenceId,UserRequest userRequest);
     UserResponse getById(Long id);
     List<UserResponse> all(int pageNo, int pageSize);
-    UserResponse update(Long id,  UserRequest userRequest);
-    UserResponse updateByAdmin(Long id,  UserRequest userRequest);
+    UserResponse update(Long id,  UserUpdateRequest userUpdateRequest);
+    UserResponse updateByAdmin(Long id,  UserUpdateRequest userUpdateRequest);
     UserResponse updatePhotoProfil(Long id, UserRequestLogo userRequestLogo);
     void delete(Long id);
     List<UserResponse> allByAgence(Long agenceId, int pageNo, int pageSize);
@@ -24,4 +24,5 @@ public interface IUserService {
     void forgotPassword(String email) throws MessagingException;
     void setPassword(String email, String newPassword);
     User byUsername(String username);
+    UserResponse getByUsername(String username);
 }

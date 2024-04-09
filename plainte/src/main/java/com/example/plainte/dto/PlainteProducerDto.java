@@ -12,6 +12,7 @@ public class PlainteProducerDto {
     private Long relatedId;
     private String message;
     private String senderUsername;
+    private Long userCreatedNotification;
     private Long receivedId;
     private Long agenceId;
     private String token;

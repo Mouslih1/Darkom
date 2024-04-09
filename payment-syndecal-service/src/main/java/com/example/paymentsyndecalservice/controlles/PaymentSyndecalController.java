@@ -22,10 +22,11 @@ public class PaymentSyndecalController {
     public ResponseEntity<PaymentSyndecalDto> save(
             @RequestBody PaymentSyndecalDto paymentSyndecalDto,
             @RequestHeader("agenceId") Long agenceId,
+            @RequestHeader("id") Long userCreateNotification,
             @RequestHeader("Authorization") String authorization
     )
     {
-        return new ResponseEntity<>(iPaymentSyndecalService.save(agenceId, paymentSyndecalDto, authorization), HttpStatus.CREATED);
+        return new ResponseEntity<>(iPaymentSyndecalService.save(agenceId,userCreateNotification, paymentSyndecalDto, authorization), HttpStatus.CREATED);
     }
 
     @GetMapping

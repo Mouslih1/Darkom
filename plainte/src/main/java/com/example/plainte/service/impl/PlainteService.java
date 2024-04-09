@@ -30,7 +30,7 @@ public class PlainteService implements IPlainteService {
 
 
     @Override
-    public PlainteDto save(Long agenceId, PlainteDto plainteDto, String authorization)
+    public PlainteDto save(Long agenceId,Long userCreatedNotification ,PlainteDto plainteDto, String authorization)
     {
         plainteDto.setAgenceId(agenceId);
         Plainte plainte = iPlainteRepository.save(modelMapper.map(plainteDto, Plainte.class));
@@ -40,6 +40,7 @@ public class PlainteService implements IPlainteService {
                         plainte.getId(),
                         "Create an complaint",
                         plainte.getPropreitaireCreatedBy(),
+                        userCreatedNotification,
                         null,
                         plainte.getAgenceId(),
                         authorization)

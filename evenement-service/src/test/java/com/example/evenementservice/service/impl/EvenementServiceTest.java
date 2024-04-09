@@ -57,7 +57,7 @@ class EvenementServiceTest {
 
         when(iEvenementRepository.save(Mockito.any(Evenement.class))).thenReturn(evenement);
 
-        EvenementDto evenementSaved = evenementService.save(1L, evenementDto, null);
+        EvenementDto evenementSaved = evenementService.save(1L, null, evenementDto, null);
         System.out.println(evenementSaved);
         System.out.println(evenement.getSujet());
         Assertions.assertThat(evenementSaved.getId()).isEqualTo(evenement.getId());

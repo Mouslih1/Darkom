@@ -28,7 +28,7 @@ public class EvenementService implements IEvenementService {
 
 
     @Override
-    public EvenementDto save(Long agenceId, EvenementDto evenementDto, String authorization)
+    public EvenementDto save(Long agenceId,Long userCreateNotification, EvenementDto evenementDto, String authorization)
     {
         evenementDto.setAgenceId(agenceId);
         Evenement evenement = iEvenementRepository.save(modelMapper.map(evenementDto, Evenement.class));
@@ -38,6 +38,7 @@ public class EvenementService implements IEvenementService {
                         evenement.getId(),
                         "Create an event",
                         evenement.getPropreitaireCreatedBy(),
+                        userCreateNotification,
                         null,
                         evenement.getAgenceId(),
                         authorization
