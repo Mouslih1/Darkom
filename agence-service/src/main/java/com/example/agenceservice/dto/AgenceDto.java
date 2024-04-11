@@ -16,10 +16,14 @@ import java.time.LocalDateTime;
 public class AgenceDto {
 
     private Long id;
+    @NotBlank
     private String name;
+    @NotBlank
     private String address;
-    private String ville;
+    @NotBlank
     private String telephone;
+    @NotBlank
+    @Email
     private String email;
     private String agentCreatedBy;
     private String agentUpdatedBy;

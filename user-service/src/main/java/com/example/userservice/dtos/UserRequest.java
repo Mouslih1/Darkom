@@ -31,6 +31,7 @@ public class UserRequest {
     private String password;
     @NotBlank
     private String telephone;
+    @NotNull
     private Role role;
     private String agentCreatedBy;
     private String agentUpdatedBy;

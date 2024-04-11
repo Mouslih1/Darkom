@@ -11,6 +11,7 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 
@@ -30,7 +31,7 @@ public class Contrat {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private TypeContrat typeContrat;
-    private Date dateSignature;
+    private LocalDate dateSignature;
     private Long appartementId;
     private Long propreitaireId;
     private double montant;

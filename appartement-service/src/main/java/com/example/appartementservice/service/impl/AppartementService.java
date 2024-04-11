@@ -93,8 +93,10 @@ public class AppartementService implements IAppartementService {
         List<Appartement> appartements = iAppartementRepository.findByImmeubleId(immeubleId);
         if (!appartements.isEmpty())
         {
+            System.out.println("appartements :" + appartements);
             for (Appartement appartement : appartements)
             {
+                System.out.println("for appartment "+appartement);
                 if (appartement.getEtatAppartement() != null && appartement.getEtatAppartement().equals(EtatAppartement.LIBRE))
                 {
                     return true;
@@ -108,6 +110,7 @@ public class AppartementService implements IAppartementService {
     @Override
     public AppartementDto update(Long id, AppartementDto appartementDto)
     {
+        validation(appartementDto.getImmeubleId());
         Appartement appartement = iAppartementRepository.findById(id).orElseThrow(() -> new NotFoundException(APPARTEMENT_NOT_FOUND + id));
 
         appartement.setReferenceAppartement(appartementDto.getReferenceAppartement());
@@ -117,7 +120,6 @@ public class AppartementService implements IAppartementService {
         appartement.setPrixVente(appartementDto.getPrixVente());
         appartement.setStatusAppartement(appartementDto.getStatusAppartement());
         appartement.setImmeubleId(appartementDto.getImmeubleId());
-        appartement.setEtatAppartement(appartementDto.getEtatAppartement());
 
         Appartement appartementUpdated = iAppartementRepository.save(appartement);
 

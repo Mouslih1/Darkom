@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 
@@ -18,7 +19,7 @@ public class ContratDto {
     private Long id;
     private TypeContrat typeContrat;
     @NotNull
-    private Date dateSignature;
+    private LocalDate dateSignature;
     @NotNull
     private Long appartementId;
     @NotNull

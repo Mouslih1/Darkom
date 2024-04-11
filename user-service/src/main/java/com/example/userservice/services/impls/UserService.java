@@ -48,7 +48,9 @@ public class UserService implements IUserService {
                 "This is your password : " + userRequest.getPassword()
         );
 
+        System.out.println("save methode : " +userRequest.getRole());
         userRequest.setAgenceId(agenceId);
+        System.out.println(userRequest.getPassword());
         userRequest.setPassword(passwordEncoder.encode(userRequest.getPassword()));
 
         return saveUserAndMedia(userRequest);
@@ -101,12 +103,13 @@ public class UserService implements IUserService {
         user.setAddress(userRequest.getAddress());
         user.setEmail(userRequest.getEmail());
 
-        System.out.println(user.getRole());
-        if(user.getRole().equals(Role.ADMIN))
-        {
-            user.setRole(userRequest.getRole());
-        }
+        System.out.println("zzzzzzzzzzzzzzzzz" + user.getRole());
+//        if(!userRequest.getRole().equals(Role.ADMIN) && !user.getRole().equals(Role.ADMIN))
+//        {
+//            user.setRole(userRequest.getRole());
+//        }
 
+        user.setRole(userRequest.getRole());
         user.setFirstname(userRequest.getFirstname());
         user.setLastname(userRequest.getLastname());
         user.setDateNaissance(userRequest.getDateNaissance());

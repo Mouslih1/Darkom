@@ -3,6 +3,7 @@ package com.example.agenceservice.exception.advice;
 import com.example.agenceservice.exception.Error;
 import com.example.agenceservice.exception.MediaClientException;
 import com.example.agenceservice.exception.NotFoundException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 @RestControllerAdvice
 public class ApplicationExceptionHandler {
@@ -41,5 +43,20 @@ public class ApplicationExceptionHandler {
     {
         Error error = new Error(exception.getMessage());
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<Object> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
+        if (ex.getCause() instanceof org.hibernate.exception.ConstraintViolationException constraintViolationException) {
+            if (Objects.equals(constraintViolationException.getConstraintName(), "uk_ktdkcoftsm3skd666yuqbmnjd")) {
+                String errorMessage = "Violation de contrainte unique : cette name existe déjà.";
+                return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+            }else if (Objects.equals(constraintViolationException.getConstraintName(), "uk_b84g4xncc0eme7s0fgu2ywn9e"))
+            {
+                String errorMessage = "Violation de contrainte unique : cette email agence existe déjà.";
+                return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+            }
+        }
+        return new ResponseEntity<>("Une erreur est survenue lors du traitement de votre requête.", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

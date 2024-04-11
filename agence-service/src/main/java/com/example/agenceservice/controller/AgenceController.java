@@ -1,5 +1,6 @@
 package com.example.agenceservice.controller;
 
+import com.example.agenceservice.dto.AgenceDto;
 import com.example.agenceservice.dto.AgenceLogoRequest;
 import com.example.agenceservice.dto.AgenceRequest;
 import com.example.agenceservice.dto.AgenceResponse;
@@ -35,7 +36,7 @@ public class AgenceController {
     @PutMapping( "/{agenceId}")
     public ResponseEntity<AgenceResponse> update(
             @PathVariable Long agenceId,
-            @RequestBody @Valid AgenceRequest agenceRequest
+            @RequestBody @Valid AgenceDto agenceRequest
     )
     {
         return new ResponseEntity<>(agenceService.update(agenceId, agenceRequest), HttpStatus.OK);

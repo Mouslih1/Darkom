@@ -50,7 +50,7 @@ public class AgenceService implements IAgenceService {
     }
 
     @Override
-    public AgenceResponse update(Long id, AgenceRequest agenceRequest)
+    public AgenceResponse update(Long id, AgenceDto agenceRequest)
     {
         Agence agence = agenceRepository.findById(id).orElseThrow(() -> new NotFoundException(AGENCE_NOT_FOUND + id));
 

@@ -11,7 +11,7 @@ import java.util.List;
 public interface IAgenceService {
 
     AgenceResponse save(AgenceRequest agenceRequest);
-    AgenceResponse update(Long id, AgenceRequest agenceRequest);
+    AgenceResponse update(Long id, AgenceDto agenceRequest);
     AgenceResponse updateLogo(Long id, AgenceLogoRequest agenceLogoRequest);
     List<AgenceResponse> all(int pageNo, int pageSize);
     AgenceResponse byId(Long id);

@@ -98,6 +98,15 @@ public class UserController {
         return new ResponseEntity<>(userService.updatePhotoProfil(id, userRequestLogo), HttpStatus.OK);
     }
 
+    @PutMapping("/photo/{id}")
+    public ResponseEntity<UserResponse> updatePhotoProfilById(
+            @PathVariable Long id,
+            @ModelAttribute @Valid UserRequestLogo userRequestLogo
+    )
+    {
+        return new ResponseEntity<>(userService.updatePhotoProfil(id, userRequestLogo), HttpStatus.OK);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Error> delete(@PathVariable Long id)
     {

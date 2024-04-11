@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 
@@ -25,7 +26,7 @@ public class ImmeubleDto {
     @NotNull
     private int numberApparetement;
     @NotNull
-    private Date anneeConstruction;
+    private LocalDate anneeConstruction;
     private Long agenceId;
     private StatusImmeuble statusImmeuble = StatusImmeuble.NON_OCCUPER;
     private String agentCreatedBy;

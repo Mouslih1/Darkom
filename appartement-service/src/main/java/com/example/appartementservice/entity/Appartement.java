@@ -37,7 +37,7 @@ public class Appartement {
     @Enumerated(value = EnumType.STRING)
     private StatusAppartement statusAppartement;
     @Enumerated(value = EnumType.STRING)
-    private EtatAppartement etatAppartement;
+    private EtatAppartement etatAppartement = EtatAppartement.LIBRE;
     private Long immeubleId;
     private Long agenceId;
 

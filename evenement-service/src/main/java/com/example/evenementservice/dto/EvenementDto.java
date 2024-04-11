@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 
@@ -20,7 +21,7 @@ public class EvenementDto {
     @NotBlank
     private String description;
     @NotNull
-    private Date dateEvenement;
+    private LocalDate dateEvenement;
     @NotNull
     private Long appartementId;
     private Long agenceId;

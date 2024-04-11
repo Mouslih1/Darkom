@@ -24,7 +24,7 @@ public class ApplicationExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 
-    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(ValidationException.class)
     public ResponseEntity<Error> hanldeBusinessException(ValidationException exception)
     {

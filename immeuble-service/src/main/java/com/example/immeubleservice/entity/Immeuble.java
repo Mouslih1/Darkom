@@ -11,6 +11,7 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 
@@ -29,11 +30,12 @@ public class Immeuble {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(unique = true)
     private String referenceImmeuble;
     private String address;
     private int numberEtage;
     private int numberApparetement;
-    private Date anneeConstruction;
+    private LocalDate anneeConstruction;
     private Long agenceId;
     @Enumerated(value = EnumType.STRING)
     private StatusImmeuble statusImmeuble;
