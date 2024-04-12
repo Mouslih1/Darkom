@@ -18,7 +18,7 @@ pipeline {
            steps {
                script {
                    def microservices = ['discovery','geteway', 'agence-service', 'appartement-service',
-                    'evenement-service', 'immeuble-service', 'media-service', 'notification-service',
+                    'evenement-service', 'immeuble-service', 'media-service',
                     'payment-contrat-service', 'payment-syndecal-service',
                     'plainte', 'user-service', 'travaux-service']
 
