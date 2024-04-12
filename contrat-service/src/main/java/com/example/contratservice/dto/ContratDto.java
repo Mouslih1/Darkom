@@ -17,6 +17,8 @@ import java.util.Date;
 public class ContratDto {
 
     private Long id;
+    private String refContrat;;
+
     private TypeContrat typeContrat;
     @NotNull
     private LocalDate dateSignature;

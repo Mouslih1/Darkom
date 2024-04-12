@@ -22,8 +22,8 @@ public class PaymentContratVenteDto {
     private TypePaymentContratVente typePaymentContratVente;
     private MethodePaymentContratVente methodePaymentContratVente;
     private double montantRester;
-    private Long agenceId;
 
+    private Long agenceId;
     private String agentCreatedBy;
     private String agentUpdatedBy;
     private LocalDateTime createdAt;

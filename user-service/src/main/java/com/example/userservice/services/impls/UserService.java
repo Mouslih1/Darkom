@@ -103,12 +103,7 @@ public class UserService implements IUserService {
         user.setAddress(userRequest.getAddress());
         user.setEmail(userRequest.getEmail());
 
-        System.out.println("zzzzzzzzzzzzzzzzz" + user.getRole());
-//        if(!userRequest.getRole().equals(Role.ADMIN) && !user.getRole().equals(Role.ADMIN))
-//        {
-//            user.setRole(userRequest.getRole());
-//        }
-
+        System.out.println("role request : "+ userRequest.getRole());
         user.setRole(userRequest.getRole());
         user.setFirstname(userRequest.getFirstname());
         user.setLastname(userRequest.getLastname());

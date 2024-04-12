@@ -30,6 +30,7 @@ public class Contrat {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String refContrat;
     private TypeContrat typeContrat;
     private LocalDate dateSignature;
     private Long appartementId;

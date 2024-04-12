@@ -2,9 +2,11 @@ package com.example.contratservice.service.impl;
 
 import com.example.contratservice.client.AppartementClient;
 import com.example.contratservice.client.ImmeubleClient;
+import com.example.contratservice.client.UserClient;
 import com.example.contratservice.dto.AppartementDto;
 import com.example.contratservice.dto.ContratDto;
 import com.example.contratservice.dto.ImmeubleDto;
+import com.example.contratservice.dto.UserResponse;
 import com.example.contratservice.entity.Contrat;
 import com.example.contratservice.entity.enums.EtatAppartement;
 import com.example.contratservice.entity.enums.StatusAppartement;
@@ -31,6 +33,7 @@ public class ContratService implements IContratService {
     private final ModelMapper modelMapper;
     private final AppartementClient appartementClient;
     private final ImmeubleClient immeubleClient;
+    private final UserClient userClient;
     private static final String CONTRAT_NOT_FOUND = "Contrat not found with this id : ";
     private static final String CONTRAT_OR_AGENCE_NOT_FOUND = "Contrat OR agence not found with this id : ";
 
@@ -44,7 +47,14 @@ public class ContratService implements IContratService {
         ImmeubleDto immeubleDto = immeubleClient.byId(appartementDto.getImmeubleId()).getBody();
         assert immeubleDto != null;
 
+        UserResponse userResponse = userClient.byId(contratDto.getId()).getBody();
+        assert userResponse != null;
+
         contratDto.setAgenceId(agenceId);
+        contratDto.setRefContrat(
+                userResponse.getUserDto().getFirstname() + ' ' + userResponse.getUserDto().getLastname() +
+                       ' ' + appartementDto.getReferenceAppartement()
+        );
         appartementClient.updateEtatAppartementToOccuper(appartementDto.getId());
 
         getTypeOfContratAndMontantOfContrat(appartementDto, contratDto);

@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 
@@ -17,13 +18,15 @@ public class TravauxDto {
 
     private Long id;
     @NotBlank
+    private String sujet;
+    @NotBlank
     private String description;
     @NotNull
     private Etat etat;
     @NotNull
-    private Date dateDebut;
+    private LocalDate dateDebut;
     @NotNull
-    private Date dateFin;
+    private LocalDate dateFin;
     @NotNull
     private double montant;
     @NotNull

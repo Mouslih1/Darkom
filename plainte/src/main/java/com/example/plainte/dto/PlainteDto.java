@@ -19,6 +19,7 @@ public class PlainteDto {
 
     private StatusPlainte statusPlainte;
     private Urgence urgence;
+    private Long immeubleId;
     private Long agenceId;
 
     private String propreitaireCreatedBy;
