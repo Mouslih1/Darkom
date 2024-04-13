@@ -193,7 +193,7 @@ public class UserController {
         return new ResponseEntity<>(new Error("Check you email for set password"), HttpStatus.OK);
     }
 
-    @PutMapping("set-password")
+    @PutMapping("/set-password")
     public ResponseEntity<Error> setPassword(@RequestParam String email, @RequestHeader String newPassword)
     {
         userService.setPassword(email, newPassword);
