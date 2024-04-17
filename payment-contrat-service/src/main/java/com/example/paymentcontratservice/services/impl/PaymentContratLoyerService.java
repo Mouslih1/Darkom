@@ -1,7 +1,10 @@
 package com.example.paymentcontratservice.services.impl;
 
+import com.example.paymentcontratservice.clients.ContratClient;
+import com.example.paymentcontratservice.dtos.ContratDto;
 import com.example.paymentcontratservice.dtos.PaymentContratLoyerDto;
 import com.example.paymentcontratservice.entities.PaymentContratLoyer;
+import com.example.paymentcontratservice.entities.enums.TypeContrat;
 import com.example.paymentcontratservice.exceptions.NotFoundException;
 import com.example.paymentcontratservice.repositories.IPaymentContratLoyerRepository;
 import com.example.paymentcontratservice.services.IPaymentContratLoyerService;
@@ -22,6 +25,7 @@ public class PaymentContratLoyerService implements IPaymentContratLoyerService {
 
     private final IPaymentContratLoyerRepository iPaymentContratLoyerRepository;
     private final ModelMapper modelMapper;
+    private final ContratClient contratClient;
     private static final String PAYMENT_CONTRAT_LOYER_NOT_FOUND = "Payment contrat loyer not found with this id : ";
     private static final String PAYMENT_CONTRAT_LOYER_OR_AGENCE_NOT_FOUND = "Payment or agence contrat loyer not found with this id : ";
 
@@ -29,6 +33,7 @@ public class PaymentContratLoyerService implements IPaymentContratLoyerService {
     public PaymentContratLoyerDto save(Long agenceId, PaymentContratLoyerDto paymentContratLoyerDto)
     {
         paymentContratLoyerDto.setAgenceId(agenceId);
+
         PaymentContratLoyer paymentContratLoyer = iPaymentContratLoyerRepository.save(modelMapper.map(paymentContratLoyerDto, PaymentContratLoyer.class));
         return modelMapper.map(paymentContratLoyer, PaymentContratLoyerDto.class);
     }

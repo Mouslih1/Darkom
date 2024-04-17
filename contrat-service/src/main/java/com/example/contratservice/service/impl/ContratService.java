@@ -24,6 +24,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -39,7 +40,7 @@ public class ContratService implements IContratService {
 
 
     @Override
-    public ContratDto save(Long agenceId,ContratDto contratDto)
+    public ContratDto save(Long agenceId,ContratDto contratDto, String authorization)
     {
         AppartementDto appartementDto = appartementClient.byId(contratDto.getAppartementId()).getBody();
         assert appartementDto != null;
@@ -47,14 +48,16 @@ public class ContratService implements IContratService {
         ImmeubleDto immeubleDto = immeubleClient.byId(appartementDto.getImmeubleId()).getBody();
         assert immeubleDto != null;
 
-        UserResponse userResponse = userClient.byId(contratDto.getId()).getBody();
+        UserResponse userResponse = userClient.byIdFeign(contratDto.getPropreitaireId(), authorization).getBody();
         assert userResponse != null;
+        System.out.println("user response : " + userResponse);
 
-        contratDto.setAgenceId(agenceId);
         contratDto.setRefContrat(
                 userResponse.getUserDto().getFirstname() + ' ' + userResponse.getUserDto().getLastname() +
                        ' ' + appartementDto.getReferenceAppartement()
         );
+        contratDto.setAgenceId(agenceId);
+
         appartementClient.updateEtatAppartementToOccuper(appartementDto.getId());
 
         getTypeOfContratAndMontantOfContrat(appartementDto, contratDto);
@@ -122,11 +125,58 @@ public class ContratService implements IContratService {
 
     public void validation(Long appartementId)
     {
-        if(existAppartement(appartementId))
-        {
+        if (existAppartement(appartementId)) {
             throw new ValidationException("We has this appartement in other contrat.");
         }
     }
+
+    public void validationForUpdate(Long appartementId, Long appartementIdRequest)
+    {
+        System.out.println(appartementId +",,,"+ appartementIdRequest);
+        if (existAppartement(appartementId)) {
+            throw new ValidationException("We has this appartement in other contrat.");
+        }
+    }
+
+    @Override
+    public ContratDto update(Long id, ContratDto contratDto, String authorization)
+    {
+        Contrat contrat = iContratRepository.findById(id).orElseThrow(() -> new NotFoundException(CONTRAT_NOT_FOUND + id));
+
+        System.out.println("1 : " + contrat.getAppartementId());
+        System.out.println("2 : " + contratDto.getAppartementId());
+        AppartementDto appartementDto = appartementClient.byId(contratDto.getAppartementId()).getBody();
+        assert appartementDto != null;
+
+        ImmeubleDto immeubleDto = immeubleClient.byId(appartementDto.getImmeubleId()).getBody();
+        assert immeubleDto != null;
+
+        appartementClient.updateEtatAppartementToOccuper(appartementDto.getId());
+
+        getTypeOfContratAndMontantOfContrat(appartementDto, contratDto);
+
+        updateStatusImmeuble(immeubleDto.getId());
+        UserResponse userResponse = userClient.byIdFeign(contratDto.getPropreitaireId(), authorization).getBody();
+        assert userResponse != null;
+        System.out.println("user response : " + userResponse);
+
+        contrat.setRefContrat(
+                userResponse.getUserDto().getFirstname() + ' ' + userResponse.getUserDto().getLastname() +
+                        ' ' + appartementDto.getReferenceAppartement()
+        );
+
+        validation(appartementDto.getId());
+
+        contrat.setAppartementId(contratDto.getAppartementId());
+        contrat.setDateSignature(contratDto.getDateSignature());
+        contrat.setPropreitaireId(contratDto.getPropreitaireId());
+        contrat.setMontant(contratDto.getMontant());
+        contrat.setTypeContrat(contratDto.getTypeContrat());
+
+        Contrat contratUpdated = iContratRepository.save(contrat);
+        return modelMapper.map(contratUpdated, ContratDto.class);
+    }
+
     @Override
     public ContratDto byId(Long id)
     {
@@ -171,34 +221,7 @@ public class ContratService implements IContratService {
                 .toList();
     }
 
-    @Override
-    public ContratDto update(Long id, ContratDto contratDto)
-    {
-        Contrat contrat = iContratRepository.findById(id).orElseThrow(() -> new NotFoundException(CONTRAT_NOT_FOUND + id));
 
-        AppartementDto appartementDto = appartementClient.byId(contratDto.getAppartementId()).getBody();
-        assert appartementDto != null;
-
-        ImmeubleDto immeubleDto = immeubleClient.byId(appartementDto.getImmeubleId()).getBody();
-        assert immeubleDto != null;
-
-        appartementClient.updateEtatAppartementToOccuper(appartementDto.getId());
-
-        getTypeOfContratAndMontantOfContrat(appartementDto, contratDto);
-
-        updateStatusImmeuble(immeubleDto.getId());
-
-        validation(appartementDto.getId());
-
-        contrat.setAppartementId(contratDto.getAppartementId());
-        contrat.setDateSignature(contratDto.getDateSignature());
-        contrat.setPropreitaireId(contratDto.getPropreitaireId());
-        contrat.setMontant(contratDto.getMontant());
-        contrat.setTypeContrat(contratDto.getTypeContrat());
-
-        Contrat contratUpdated = iContratRepository.save(contrat);
-        return modelMapper.map(contratUpdated, ContratDto.class);
-    }
 
     @Override
     public void delete(Long id)

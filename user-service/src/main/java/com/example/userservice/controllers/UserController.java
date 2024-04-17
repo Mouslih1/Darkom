@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 @RestController
@@ -27,7 +28,6 @@ public class UserController {
             @ModelAttribute @Valid UserRequest userRequest
     )
     {
-        System.out.println();
         return new ResponseEntity<>(userService.save(agenceId, userRequest), HttpStatus.CREATED);
     }
 
@@ -187,8 +187,7 @@ public class UserController {
     }
 
     @PutMapping("/forgot-password")
-    public ResponseEntity<Error> forgotPassword(@RequestParam String email) throws MessagingException
-    {
+    public ResponseEntity<Error> forgotPassword(@RequestParam String email) throws MessagingException, UnsupportedEncodingException {
         userService.forgotPassword(email);
         return new ResponseEntity<>(new Error("Check you email for set password"), HttpStatus.OK);
     }

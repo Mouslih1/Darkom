@@ -8,6 +8,8 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
+import java.io.UnsupportedEncodingException;
+
 @Service
 public class EmailSenderService {
 
@@ -29,15 +31,15 @@ public class EmailSenderService {
         javaMailSender.send(message);
     }
 
-    public void sendToEmailSetPassword(String email, String subject) throws MessagingException
-    {
+    public void sendToEmailSetPassword(String email, String subject) throws MessagingException, UnsupportedEncodingException {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage);
+        mimeMessageHelper.setFrom("maromouslih@gmail.com", "Darkom immobilier");
         mimeMessageHelper.setTo(email);
         mimeMessageHelper.setSubject(subject);
         mimeMessageHelper.setText("""
         <div>
-          <a href="http://localhost:8222/api/v1/users/set-password?email=%s" target="_blank">click link to set password</a>
+          <a href="http://localhost:4200/set-password?email=%s" target="_blank">click link to set password</a>
         </div>
         """.formatted(email), true);
 

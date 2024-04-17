@@ -7,12 +7,12 @@ import java.util.List;
 
 public interface IContratService {
 
-    ContratDto save(Long agenceId, ContratDto contratDto);
+    ContratDto save(Long agenceId, ContratDto contratDto, String authorization);
     ContratDto byId(Long id);
     List<ContratDto> all(int pageNo, int pageSize);
     ContratDto byIdAndAgence(Long contratId, Long agenceId);
     List<ContratDto> allByAgence(Long agenceId, int pageNo, int pageSize);
-    ContratDto update(Long id,  ContratDto contratDto);
+    ContratDto update(Long id,  ContratDto contratDto, String authorization);
     void delete(Long id);
     void updateStatusImmeuble(Long immeubleId);
     void getTypeOfContratAndMontantOfContrat(AppartementDto appartementDto, ContratDto contratDto);

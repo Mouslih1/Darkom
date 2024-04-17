@@ -20,6 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -238,8 +239,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public void forgotPassword(String email) throws MessagingException
-    {
+    public void forgotPassword(String email) throws MessagingException, UnsupportedEncodingException {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_WITH_EMAIL + email));
 
         emailSenderService.sendToEmailSetPassword(email, "Set Password");

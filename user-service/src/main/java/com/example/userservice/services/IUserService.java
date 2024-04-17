@@ -4,6 +4,7 @@ import com.example.userservice.dtos.*;
 import com.example.userservice.entities.User;
 import jakarta.mail.MessagingException;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 
@@ -21,7 +22,7 @@ public interface IUserService {
     UserResponse byIdAndAgence(Long userId, Long agenceId);
     UserResponse saveByAdmin(UserRequest userDto);
     boolean updatePassword(Long id, UserPasswordDto userPasswordDto);
-    void forgotPassword(String email) throws MessagingException;
+    void forgotPassword(String email) throws MessagingException, UnsupportedEncodingException;
     void setPassword(String email, String newPassword);
     User byUsername(String username);
     UserResponse getByUsername(String username);

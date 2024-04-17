@@ -22,16 +22,21 @@ public class ContratController {
     @PostMapping
     public ResponseEntity<ContratDto> save(
             @RequestBody @Valid ContratDto contratDto,
-            @RequestHeader("agenceId") Long agenceId
+            @RequestHeader("agenceId") Long agenceId,
+            @RequestHeader("Authorization") String authorization
     )
     {
-        return new ResponseEntity<>(iContratService.save(agenceId, contratDto), HttpStatus.CREATED);
+        return new ResponseEntity<>(iContratService.save(agenceId, contratDto, authorization), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ContratDto> update(@PathVariable Long id, @RequestBody @Valid ContratDto contratDto)
+    public ResponseEntity<ContratDto> update(
+            @PathVariable Long id,
+            @RequestBody @Valid ContratDto contratDto,
+            @RequestHeader("Authorization") String authorization
+    )
     {
-        return new ResponseEntity<>(iContratService.update(id, contratDto), HttpStatus.OK);
+        return new ResponseEntity<>(iContratService.update(id, contratDto, authorization), HttpStatus.OK);
     }
 
     @GetMapping

@@ -35,6 +35,7 @@ public class PaymentSyndecalService implements IPaymentSyndecalService {
         paymentSyndecalDto.setAgenceId(agenceId);
         PaymentSyndecal paymentSyndecal = iPaymentSyndecalRepository.save(modelMapper.map(paymentSyndecalDto, PaymentSyndecal.class));
 
+        System.out.println("payment : " + userCreateNotification  + paymentSyndecal.getPayerId());
         paymentSyndicatProducer.producerMessage(
                 new PaymentSyndicatProducerDto(
                         paymentSyndecal.getId(),

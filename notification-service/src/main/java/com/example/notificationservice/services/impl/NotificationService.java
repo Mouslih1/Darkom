@@ -109,8 +109,11 @@ public class NotificationService implements INotificationService {
 
         for (UserResponse user : userDtos)
         {
+            System.out.println("user id : " + user.getUserDto().getId());
+            System.out.println("payer id : " + paymentSyndicatProducerDto.getPayerId());
             if(!user.getUserDto().getId().equals(paymentSyndicatProducerDto.getPayerId()))
             {
+                System.out.println("good " + user.getUserDto().getId() + paymentSyndicatProducerDto.getPayerId());
                 saveFirebase(
                         Notification.builder()
                                 .agenceId(paymentSyndicatProducerDto.getAgenceId())
