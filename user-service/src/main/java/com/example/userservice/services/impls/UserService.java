@@ -212,6 +212,7 @@ public class UserService implements IUserService {
                 "This is your password : " + userRequest.getPassword()
         );
 
+
         userRequest.setPassword(passwordEncoder.encode(userRequest.getPassword()));
         return saveUserAndMedia(userRequest);
     }
