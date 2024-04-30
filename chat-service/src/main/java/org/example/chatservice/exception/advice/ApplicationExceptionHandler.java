@@ -1,5 +1,6 @@
 package org.example.chatservice.exception.advice;
 
+import org.example.chatservice.exception.Error;
 import org.example.chatservice.exception.NotFoundException;
 import org.example.chatservice.exception.ValidationException;
 import org.springframework.http.HttpStatus;

@@ -8,6 +8,7 @@ import org.example.chatservice.service.IChatService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.Optional;
 
 @Service
@@ -21,18 +22,31 @@ public class ChatService implements IChatService {
     @Override
     public ChatDto getChat(Long senderId, Long receivedId)
     {
+        System.out.println("sender id :" + senderId);
+        System.out.println("received id : " + receivedId);
         Optional<Chat> chat = iChatRepository.findBySenderIdAndReceivedId(senderId, receivedId);
-        ChatDto chatDto;
+
+        System.out.println("chat get : " + chat);
+        ChatDto chatDto = new ChatDto();
 
         if(chat.isPresent())
         {
-            chatDto =  modelMapper.map(chat, ChatDto.class);
-            if(!chatDto.getMessages().isEmpty())
+            System.out.println(chat);
+           // chatDto =  modelMapper.map(chat, ChatDto.class);
+            chatDto.setId(chat.get().getId());
+            chatDto.setMessages(chat.get().getMessages());
+            chatDto.setCreatedAt(chat.get().getCreatedAt());
+            chatDto.setReceivedId(chat.get().getReceivedId());
+            chatDto.setSenderId(chat.get().getSenderId());
+
+
+            System.out.println(chatDto);
+            if(chatDto.getMessages() != null)
             {
                 messageService.updateStatusMessage(senderId, receivedId);
             }
         }else {
-            Chat chatSaved = iChatRepository.save(Chat.builder().senderId(senderId).receivedId(receivedId).build());
+            Chat chatSaved = iChatRepository.save(Chat.builder().senderId(senderId).receivedId(receivedId).createdAt(new Date(System.currentTimeMillis())).build());
             chatDto = modelMapper.map(chatSaved, ChatDto.class);
         }
 

@@ -36,7 +36,6 @@ public class ChatController {
         );
     }
 
-
     @GetMapping("/{receivedId}/chat")
     public ResponseEntity<ChatDto> getChat(
             @RequestHeader("id") Long senderId,

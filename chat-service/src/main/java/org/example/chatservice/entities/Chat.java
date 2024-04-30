@@ -11,6 +11,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -20,7 +21,6 @@ import java.util.List;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-@EntityListeners(AuditingEntityListener.class)
 @SQLDelete(sql = "UPDATE chats SET is_delete = true WHERE id=?")
 @Where(clause = "is_delete = false")
 @Builder
@@ -35,8 +35,7 @@ public class Chat {
     @OneToMany(fetch = FetchType.EAGER)
     private List<Message> messages;
 
-    @CreatedDate
-    private LocalDateTime createdAt;
+    private Date createdAt;
 
     private boolean isDelete = Boolean.FALSE;
 }

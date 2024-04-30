@@ -10,6 +10,7 @@ import org.springframework.data.annotation.CreatedDate;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -19,9 +20,9 @@ import java.util.List;
 public class ChatDto {
 
     private Long id;
-    private Long senderId; // get in token
-    private Long receivedId; // get in end point
+    private Long senderId;
+    private Long receivedId;
     @NotNull
     private List<Message> messages;
-    private LocalDateTime createdAt;
+    private Date createdAt;
 }
